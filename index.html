@@ -20,7 +20,7 @@ p{font-size:15px}
 #cover .bg{position:absolute;inset:0;background:linear-gradient(160deg,var(--cv1),var(--cv2) 70%);overflow:hidden}
 #cover .bg img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out forwards}
 #cover .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(var(--sh),.65),rgba(var(--sh),0) 60%)}
-#cover .txt{position:relative;z-index:2;padding:0 28px 80px}
+#cover .txt{position:relative;z-index:2;padding:0 28px 150px}
 #cover .small{font-family:Georgia,serif;letter-spacing:.35em;font-size:12px;opacity:0;animation:up 1.2s .4s forwards}
 #cover h1{font-size:30px;font-weight:500;margin:10px 0;opacity:0;animation:up 1.2s .9s forwards}
 #cover .when{font-size:14px;opacity:0;animation:up 1.2s 1.4s forwards}
@@ -97,12 +97,12 @@ footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
    ===================================================== */
 const CONFIG = {
   theme: "blue",
-  babyName: "하늘",
-  title: "하늘이의 첫번째 생일",
-  date: "2027-01-16T14:00:00+09:00",
-  dateText: "2027년 1월 16일 토요일 오후 2시",
-  venue: "장소 이름 1층 홀",
-  address: "서울시 ○○구 ○○로 123",
+  babyName: "여준",
+  title: "여준이의 첫번째 생일",
+  date: "2027-01-30T11:00:00+09:00",
+  dateText: "2027년 1월 30일 토요일 오전 11시",
+  venue: "포포인츠 바이 쉐라톤 서울 구로 2층 PDR-C",
+  address: "서울 구로구 디지털로32길 72",
   mapUrl: "",
   coverPhoto: "",
   greeting: [
@@ -113,7 +113,7 @@ const CONFIG = {
     "그 마음에 감사드리며 작은 자리를 마련했습니다.",
     "함께 오셔서 축복해 주세요."
   ],
-  dad: "아빠 이름", mom: "엄마 이름",
+  dad: "아빠 김철순", mom: "엄마 황다희",
   timelineTitle: "1년간의 성장 이야기",
   timeline: [
     { date: "2026.01.16", title: "세상에 첫 인사", photo: "" },
@@ -123,23 +123,24 @@ const CONFIG = {
   ],
   gallery: ["", "", "", "", "", ""],
   family: [
-    { name: "아빠 이름", tag: "#슈퍼맨", photo: "" },
-    { name: "엄마 이름", tag: "#사랑나무", photo: "" },
-    { name: "하늘", tag: "#보물1호", photo: "" }
+    { name: "김철순", tag: "#슈퍼맨", photo: "" },
+    { name: "황다희", tag: "#사랑나무", photo: "" },
+    { name: "김여준", tag: "#보물1호", photo: "" }
   ],
   about: [
     { q: "태명은?", a: "○○" },
     { q: "가장 좋아하는 장난감은?", a: "곰돌이 인형" },
-    { q: "하늘이에게 바라는 점", a: "건강하고 밝게 자라길 바라요." }
+    { q: "여준이에게 바라는 점", a: "건강하고 밝게 자라길 바라요." }
   ],
   info: [
-    { title: "주차", text: "건물 지하 주차장 2시간 무료" },
+    { title: "교통", text: "2호선 구로디지털단지역 2번 출구에서 도보 약 3분이에요." },
+    { title: "주차", text: "호텔 지하 주차장을 이용할 수 있어요." },
     { title: "답례품", text: "참석해 주신 분들께 작은 선물을 준비했어요." },
     { title: "포토부스", text: "가족 사진을 남길 수 있는 공간이 있어요." }
   ],
   accounts: [
-    { who: "아빠 이름", bank: "은행", number: "000-0000-0000" },
-    { who: "엄마 이름", bank: "은행", number: "000-0000-0000" }
+    { who: "김철순", bank: "은행", number: "000-0000-0000" },
+    { who: "황다희", bank: "은행", number: "000-0000-0000" }
   ],
   phone: "",
   rsvpUrl: "",
