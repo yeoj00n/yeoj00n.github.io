@@ -79,8 +79,10 @@ p{font-size:15px}
 .btn{border:1px solid var(--gold);background:transparent;color:var(--ink);padding:10px 18px;border-radius:30px;font-size:13px;font-family:inherit;text-decoration:none;cursor:pointer;display:inline-block}
 .btn.fill{background:var(--gold);color:var(--on)}
 .mapbox{position:relative;height:240px;margin-top:18px;border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(var(--gl),.12);background:var(--p1)}
-.mapbox iframe{display:block;width:100%;height:100%;border:0;pointer-events:none}
-.mapbox.on iframe{pointer-events:auto}
+.mapbox #kmap{display:block;width:100%;height:100%;border:0;pointer-events:none}
+.mapbox.on #kmap{pointer-events:auto}
+.mapfail{display:flex;align-items:center;justify-content:center;height:100%;padding:0 20px;font-size:13px;color:var(--sub)}
+.kpin{padding:4px 10px;border-radius:14px;background:#fff;border:1px solid var(--gold);color:var(--ink);font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .mapbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .mapbtns .btn{background:rgba(var(--ac),.16);padding:10px 0;text-align:center;border-radius:10px}
 .mapnote{font-size:11px;color:var(--sub);margin-top:6px}
@@ -114,6 +116,7 @@ const CONFIG = {
   mapUrl: "",
   mapQuery: "서울 구로구 디지털로32길 72 포포인츠 바이 쉐라톤 서울 구로",  // 지도·길찾기 검색어
   mapName: "포포인츠 바이 쉐라톤 서울 구로",  // 티맵 검색 이름
+  kakaoKey: "88eb3c18d4c98f7ab69bbc468dd90351",  // 카카오 JavaScript 키 (비우면 지도 대신 안내 문구)
   coverPhoto: "",
   coverBaby: "file_00000000bd4c82099c99e75a4dbca460.png",  // 표지에 서 있는 아기 사진(배경 없는 PNG). 비우면 안 보여요
   greeting: [
@@ -201,7 +204,7 @@ $("#app").innerHTML = `
   ${C.about.map(a => `<div class="qa reveal"><button class="q" type="button" aria-expanded="false"><span>${esc(a.q)}</span><em>더보기 +</em></button><div class="a"><div>${esc(a.a)}</div></div></div>`).join("")}</div></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Location</div><h2 class="reveal">오시는 길</h2>
   <p class="reveal"><b>${esc(C.venue)}</b><br>${esc(C.address)}</p>
-  <div class="mapbox reveal" onclick="this.classList.add('on')"><iframe loading="lazy" title="지도" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${mq}&output=embed"></iframe></div>
+  <div class="mapbox reveal" onclick="this.classList.add('on')"><div id="kmap" role="img" aria-label="지도"></div></div>
   <div class="mapbtns reveal"><a class="btn" href="https://map.naver.com/p/search/${mq}" target="_blank" rel="noopener">네이버지도</a><a class="btn" href="https://map.kakao.com/link/search/${mq}" target="_blank" rel="noopener">카카오맵</a><a class="btn" id="tmapBtn" href="https://play.google.com/store/apps/details?id=com.skt.tmap.ku" target="_blank" rel="noopener">티맵</a></div>
   <div class="btns reveal">${C.mapUrl ? `<a class="btn fill" href="${C.mapUrl}" target="_blank">지도 보기</a>` : ""}<button class="btn" data-copy="${esc(C.address)}">주소 복사</button></div>
   ${C.info.map(i => `<div class="info reveal"><b>${esc(i.title)}</b>${esc(i.text)}</div>`).join("")}</section>
@@ -220,6 +223,35 @@ if (tmapBtn) tmapBtn.onclick = e => {
     if (/iPhone|iPad|iPod/i.test(ua)) setTimeout(() => { if (!document.hidden) location.href = TMAP_IOS; }, 1500);
   }
 };
+const kmapEl = $("#kmap");
+const kmapFail = () => { if (kmapEl) kmapEl.innerHTML = '<div class="mapfail">지도를 불러오지 못했어요. 아래 버튼으로 열어 주세요.</div>'; };
+function initKmap() {
+  const k = kakao.maps, name = C.mapName || C.venue;
+  const show = (lat, lng) => {
+    const pos = new k.LatLng(lat, lng), map = new k.Map(kmapEl, { center: pos, level: 3, draggable: true });
+    map.setZoomable(false);
+    new k.Marker({ map, position: pos });
+    new k.CustomOverlay({ map, position: pos, yAnchor: 2.4, content: '<div class="kpin">' + esc(name) + '</div>' });
+    kmapEl.parentElement.addEventListener("click", () => map.setZoomable(true), { once: true });
+    map.relayout(); map.setCenter(pos);
+  };
+  new k.services.Geocoder().addressSearch(C.address, (r, st) => {
+    if (st === k.services.Status.OK && r[0]) show(r[0].y, r[0].x);
+    else new k.services.Places().keywordSearch(name, (r2, st2) => {
+      if (st2 === k.services.Status.OK && r2[0]) show(r2[0].y, r2[0].x); else kmapFail();
+    });
+  });
+}
+if (kmapEl) {
+  if (!C.kakaoKey) kmapFail();
+  else {
+    const ks = document.createElement("script");
+    ks.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=" + encodeURIComponent(C.kakaoKey) + "&libraries=services&autoload=false";
+    ks.onerror = kmapFail;
+    ks.onload = () => { try { kakao.maps.load(initKmap); } catch (e) { kmapFail(); } };
+    document.head.appendChild(ks);
+  }
+}
 const cv = $("#cover"), sy = ["🎈", "✨", "💙", "⭐", "🎈"];
 for (let i = 0; i < 12; i++) {
   const e = document.createElement("div"); e.className = "float"; e.textContent = sy[i % sy.length];
