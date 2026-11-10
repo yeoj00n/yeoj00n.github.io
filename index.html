@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>돌잔치 초대장</title>
 <style>
-:root{--bg:#fbf7f0;--card:#fffdf8;--ink:#4a4038;--sub:#8a7d70;--gold:#c9a66b;--soft:#f1e6d3}
+:root{--bg:#f4f9fd;--card:#ffffff;--ink:#35465a;--sub:#7a8ea3;--gold:#6fa8dc;--soft:#e3f0fa;--page:#dfe9f1;--line:#cfe0ee;--p1:#e8f3fb;--p2:#cfe5f5;--pc:#8fb0cc;--cv0:#b8d6ee;--cv1:#dcecf9;--cv2:#8fbfe6;--sh:30,55,85;--gl:80,140,200;--ac:111,168,220;--on:#ffffff}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:#e9e2d6;font-family:'Noto Serif KR','Apple SD Gothic Neo','Malgun Gothic',serif;color:var(--ink);line-height:1.8;-webkit-font-smoothing:antialiased}
+body{background:var(--page);font-family:'Noto Serif KR','Apple SD Gothic Neo','Malgun Gothic',serif;color:var(--ink);line-height:1.8;-webkit-font-smoothing:antialiased}
 #app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh;overflow:hidden;position:relative;box-shadow:0 0 40px rgba(0,0,0,.08)}
 section{padding:72px 28px;text-align:center;position:relative}
 .eyebrow{font-family:Georgia,serif;letter-spacing:.3em;font-size:12px;color:var(--gold);margin-bottom:10px;text-transform:uppercase}
 h2{font-weight:500;font-size:22px;margin-bottom:28px}
 p{font-size:15px}
-.photo{width:100%;background:linear-gradient(135deg,#f3e8d4,#e8d9bd);display:flex;align-items:center;justify-content:center;color:#b3a283;font-size:13px;overflow:hidden;border-radius:6px}
+.photo{width:100%;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;color:var(--pc);font-size:13px;overflow:hidden;border-radius:6px}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
-#cover{min-height:100vh;padding:0;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;background:#d8c4a0}
-#cover .bg{position:absolute;inset:0;background:linear-gradient(160deg,#f3e6cc,#d9bf92 70%);overflow:hidden}
+#cover{min-height:100vh;padding:0;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;background:var(--cv0)}
+#cover .bg{position:absolute;inset:0;background:linear-gradient(160deg,var(--cv1),var(--cv2) 70%);overflow:hidden}
 #cover .bg img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out forwards}
-#cover .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(60,45,30,.65),rgba(60,45,30,0) 60%)}
+#cover .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(var(--sh),.65),rgba(var(--sh),0) 60%)}
 #cover .txt{position:relative;z-index:2;padding:0 28px 80px}
 #cover .small{font-family:Georgia,serif;letter-spacing:.35em;font-size:12px;opacity:0;animation:up 1.2s .4s forwards}
 #cover h1{font-size:30px;font-weight:500;margin:10px 0;opacity:0;animation:up 1.2s .9s forwards}
@@ -38,20 +38,20 @@ p{font-size:15px}
 .tl{position:relative;text-align:left;padding-left:26px;margin:0 6px}
 .tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--gold);opacity:.5}
 .tl .it{position:relative;margin-bottom:26px}
-.tl .it:before{content:"";position:absolute;left:-26px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(201,166,107,.2)}
+.tl .it:before{content:"";position:absolute;left:-26px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(var(--ac),.2)}
 .tl .d{font-family:Georgia,serif;font-size:12px;color:var(--gold);letter-spacing:.1em}
 .tl .t{font-size:15px}
 .tl .photo{height:150px;margin-top:8px}
-.cal{background:var(--card);border-radius:10px;padding:22px 16px;margin:0 0 28px;box-shadow:0 4px 20px rgba(120,95,50,.08)}
+.cal{background:var(--card);border-radius:10px;padding:22px 16px;margin:0 0 28px;box-shadow:0 4px 20px rgba(var(--gl),.1)}
 .cal .m{font-size:15px;margin-bottom:12px}
 .cal table{width:100%;border-collapse:collapse;font-size:13px}
 .cal th{color:var(--sub);font-weight:400;padding:6px 0}
 .cal td{padding:8px 0}
-.cal td.sun,.cal th:first-child{color:#c77}
-.cal td.on span{display:inline-block;width:30px;height:30px;line-height:30px;border-radius:50%;background:var(--gold);color:#fff;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,166,107,.5)}50%{box-shadow:0 0 0 9px rgba(201,166,107,0)}}
+.cal td.sun,.cal th:first-child{color:#d77}
+.cal td.on span{display:inline-block;width:30px;height:30px;line-height:30px;border-radius:50%;background:var(--gold);color:var(--on);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--ac),.5)}50%{box-shadow:0 0 0 9px rgba(var(--ac),0)}}
 .count{display:flex;justify-content:center;gap:10px;margin-bottom:14px}
-.count div{background:var(--card);border-radius:10px;width:66px;padding:12px 0;box-shadow:0 4px 14px rgba(120,95,50,.08)}
+.count div{background:var(--card);border-radius:10px;width:66px;padding:12px 0;box-shadow:0 4px 14px rgba(var(--gl),.1)}
 .count b{display:block;font-size:22px;font-weight:500;font-family:Georgia,serif}
 .count small{font-size:10px;color:var(--sub);letter-spacing:.1em}
 .gal{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -64,19 +64,19 @@ p{font-size:15px}
 .fam .c{width:30%}
 .fam .photo{aspect-ratio:1/1;border-radius:50%;margin-bottom:10px}
 .fam .n{font-size:15px}.fam .h{font-size:12px;color:var(--gold)}
-.qa{background:var(--card);border-radius:10px;padding:18px 20px;margin-bottom:12px;text-align:left;box-shadow:0 4px 14px rgba(120,95,50,.06)}
+.qa{background:var(--card);border-radius:10px;padding:18px 20px;margin-bottom:12px;text-align:left;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 .qa .q{font-size:12px;color:var(--gold);margin-bottom:2px}
 .btns{display:flex;gap:8px;justify-content:center;margin:18px 0 6px;flex-wrap:wrap}
 .btn{border:1px solid var(--gold);background:transparent;color:var(--ink);padding:10px 18px;border-radius:30px;font-size:13px;font-family:inherit;text-decoration:none;cursor:pointer;display:inline-block}
-.btn.fill{background:var(--gold);color:#fff}
-.info{text-align:left;background:var(--card);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:14px;box-shadow:0 4px 14px rgba(120,95,50,.06)}
+.btn.fill{background:var(--gold);color:var(--on)}
+.info{text-align:left;background:var(--card);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:14px;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 .info b{display:block;font-weight:500;color:var(--gold);font-size:13px}
-.acc{background:var(--card);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;text-align:left;box-shadow:0 4px 14px rgba(120,95,50,.06)}
+.acc{background:var(--card);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;text-align:left;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 .acc small{color:var(--sub);font-size:12px}
 .acc .btn{padding:6px 14px}
-form{text-align:left;background:var(--card);padding:22px;border-radius:10px;box-shadow:0 4px 14px rgba(120,95,50,.06)}
+form{text-align:left;background:var(--card);padding:22px;border-radius:10px;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 label{display:block;font-size:13px;color:var(--sub);margin:12px 0 4px}
-input,select,textarea{width:100%;border:1px solid #e3d8c4;border-radius:6px;padding:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink)}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink)}
 form .btn{width:100%;margin-top:18px}
 footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
 #music{position:fixed;top:14px;right:14px;z-index:50;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.8);font-size:16px;display:none;cursor:pointer}
@@ -88,7 +88,15 @@ footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
 <div id="lb"><img alt=""></div>
 
 <script>
+/* =====================================================
+   여기만 고치면 돼요. 글자는 따옴표 안의 내용만 바꾸고,
+   사진은 파일 이름이나 주소를 "" 안에 넣으면 됩니다.
+   (예: "photos/1.jpg"  비워두면 빈 사진 자리로 보여요)
+   예시로 들어 있는 이름, 날짜, 장소는 전부 가짜예요.
+   색은 theme 에서 "blue"(하늘색), "yellow"(노랑), "beige"(베이지) 중에 고르세요.
+   ===================================================== */
 const CONFIG = {
+  theme: "blue",
   babyName: "하늘",
   title: "하늘이의 첫번째 생일",
   date: "2027-01-16T14:00:00+09:00",
@@ -138,7 +146,15 @@ const CONFIG = {
   music: "",
   footer: "함께해 주셔서 감사합니다."
 };
+/* ===================== 아래는 건드리지 않아도 돼요 ===================== */
+const THEMES = {
+  blue: { bg: "#f4f9fd", card: "#ffffff", ink: "#35465a", sub: "#7a8ea3", gold: "#6fa8dc", soft: "#e3f0fa", page: "#dfe9f1", line: "#cfe0ee", p1: "#e8f3fb", p2: "#cfe5f5", pc: "#8fb0cc", cv0: "#b8d6ee", cv1: "#dcecf9", cv2: "#8fbfe6", sh: "30,55,85", gl: "80,140,200", ac: "111,168,220", on: "#ffffff" },
+  yellow: { bg: "#fffbea", card: "#fffef7", ink: "#4d4430", sub: "#9a8c64", gold: "#f2b632", soft: "#fdf1c4", page: "#f3ecd2", line: "#efe2a9", p1: "#fff3c4", p2: "#fde39a", pc: "#c2a553", cv0: "#f6d56b", cv1: "#fff0b8", cv2: "#f4c542", sh: "70,52,10", gl: "150,115,20", ac: "242,182,50", on: "#4a3800" },
+  beige: { bg: "#fbf7f0", card: "#fffdf8", ink: "#4a4038", sub: "#8a7d70", gold: "#c9a66b", soft: "#f1e6d3", page: "#e9e2d6", line: "#e3d8c4", p1: "#f3e8d4", p2: "#e8d9bd", pc: "#b3a283", cv0: "#d8c4a0", cv1: "#f3e6cc", cv2: "#d9bf92", sh: "60,45,30", gl: "120,95,50", ac: "201,166,107", on: "#ffffff" }
+};
 const C = CONFIG, $ = s => document.querySelector(s);
+const themeName = new URLSearchParams(location.search).get("theme") || C.theme;
+Object.entries(THEMES[themeName] || THEMES.blue).forEach(([k, v]) => document.documentElement.style.setProperty("--" + k, v));
 const ph = (src, cls = "") => `<div class="photo ${cls}">${src ? `<img src="${src}" alt="" loading="lazy">` : "사진을 넣어주세요"}</div>`;
 const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 const d = new Date(C.date);
