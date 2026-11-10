@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>돌잔치 초대장</title>
 <style>
-:root{--bg:#f4f9fd;--card:#ffffff;--ink:#35465a;--sub:#7a8ea3;--gold:#6fa8dc;--soft:#e3f0fa;--page:#dfe9f1;--line:#cfe0ee;--p1:#e8f3fb;--p2:#cfe5f5;--pc:#8fb0cc;--cv0:#b8d6ee;--cv1:#dcecf9;--cv2:#8fbfe6;--sh:30,55,85;--gl:80,140,200;--ac:111,168,220;--on:#ffffff}
+:root{--bg:#f4f9fd;--card:#ffffff;--ink:#35465a;--sub:#7a8ea3;--gold:#6fa8dc;--soft:#e3f0fa;--page:#dfe9f1;--line:#cfe0ee;--p1:#e8f3fb;--p2:#cfe5f5;--pc:#8fb0cc;--cv0:#b8d6ee;--cv1:#dcecf9;--cv2:#8fbfe6;--sh:47,111,176;--gl:80,140,200;--ac:111,168,220;--on:#ffffff}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--page);font-family:'Noto Serif KR','Apple SD Gothic Neo','Malgun Gothic',serif;color:var(--ink);line-height:1.8;-webkit-font-smoothing:antialiased}
@@ -148,9 +148,9 @@ const CONFIG = {
 };
 /* ===================== 아래는 건드리지 않아도 돼요 ===================== */
 const THEMES = {
-  blue: { bg: "#f4f9fd", card: "#ffffff", ink: "#35465a", sub: "#7a8ea3", gold: "#6fa8dc", soft: "#e3f0fa", page: "#dfe9f1", line: "#cfe0ee", p1: "#e8f3fb", p2: "#cfe5f5", pc: "#8fb0cc", cv0: "#b8d6ee", cv1: "#dcecf9", cv2: "#8fbfe6", sh: "30,55,85", gl: "80,140,200", ac: "111,168,220", on: "#ffffff" },
-  yellow: { bg: "#fffbea", card: "#fffef7", ink: "#4d4430", sub: "#9a8c64", gold: "#f2b632", soft: "#fdf1c4", page: "#f3ecd2", line: "#efe2a9", p1: "#fff3c4", p2: "#fde39a", pc: "#c2a553", cv0: "#f6d56b", cv1: "#fff0b8", cv2: "#f4c542", sh: "70,52,10", gl: "150,115,20", ac: "242,182,50", on: "#4a3800" },
-  beige: { bg: "#fbf7f0", card: "#fffdf8", ink: "#4a4038", sub: "#8a7d70", gold: "#c9a66b", soft: "#f1e6d3", page: "#e9e2d6", line: "#e3d8c4", p1: "#f3e8d4", p2: "#e8d9bd", pc: "#b3a283", cv0: "#d8c4a0", cv1: "#f3e6cc", cv2: "#d9bf92", sh: "60,45,30", gl: "120,95,50", ac: "201,166,107", on: "#ffffff" }
+  blue: { bg: "#f4f9fd", card: "#ffffff", ink: "#35465a", sub: "#7a8ea3", gold: "#6fa8dc", soft: "#e3f0fa", page: "#dfe9f1", line: "#cfe0ee", p1: "#e8f3fb", p2: "#cfe5f5", pc: "#8fb0cc", cv0: "#b8d6ee", cv1: "#dcecf9", cv2: "#8fbfe6", sh: "47,111,176", gl: "80,140,200", ac: "111,168,220", on: "#ffffff" },
+  yellow: { bg: "#fffbea", card: "#fffef7", ink: "#4d4430", sub: "#9a8c64", gold: "#f2b632", soft: "#fdf1c4", page: "#f3ecd2", line: "#efe2a9", p1: "#fff3c4", p2: "#fde39a", pc: "#c2a553", cv0: "#f6d56b", cv1: "#fff0b8", cv2: "#f4c542", sh: "178,127,0", gl: "150,115,20", ac: "242,182,50", on: "#4a3800" },
+  beige: { bg: "#fbf7f0", card: "#fffdf8", ink: "#4a4038", sub: "#8a7d70", gold: "#c9a66b", soft: "#f1e6d3", page: "#e9e2d6", line: "#e3d8c4", p1: "#f3e8d4", p2: "#e8d9bd", pc: "#b3a283", cv0: "#d8c4a0", cv1: "#f3e6cc", cv2: "#d9bf92", sh: "140,105,55", gl: "120,95,50", ac: "201,166,107", on: "#ffffff" }
 };
 const C = CONFIG, $ = s => document.querySelector(s);
 const themeName = new URLSearchParams(location.search).get("theme") || C.theme;
