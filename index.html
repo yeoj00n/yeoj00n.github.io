@@ -106,11 +106,15 @@ p{font-size:15px}
 .info{text-align:left;background:var(--card);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:14px;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 .info b{display:block;font-weight:500;color:var(--gold);font-size:13px}
 footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
-#music{position:fixed;top:14px;right:14px;z-index:50;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.8);font-size:16px;display:none;cursor:pointer}
+#music{position:fixed;top:12px;right:calc(max(0px,(100% - 480px)/2) + 12px);z-index:50;width:36px;height:36px;padding:0;border-radius:50%;border:none;background:rgba(255,255,255,.75);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(var(--sh),.18);display:none;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#music svg{width:20px;height:20px;fill:none;stroke:#6fa8dc;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#music .sl{display:none}
+#music.off .sl{display:inline}
+#music.off .wv{display:none}
 </style>
 </head>
 <body>
-<button id="music" aria-label="배경음악">♪</button>
+<button id="music" type="button" aria-label="배경음악 켜기" class="off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wv" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/><path class="sl" d="M4 4l16 16"/></svg></button>
 <div id="app"></div>
 <div id="lb" role="dialog" aria-modal="true" aria-hidden="true"><img alt=""><button type="button" class="lbp" aria-label="이전 사진"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="lbn" aria-label="다음 사진"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button><button type="button" class="lbx" aria-label="닫기"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
 
@@ -169,7 +173,8 @@ const CONFIG = {
     { title: "주차", text: "호텔 지하 주차장을 이용할 수 있어요." },
     { title: "답례품", text: "참석해 주신 분들께 작은 선물을 준비했어요." }
   ],
-  music: "",
+  bgmUrl: "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/df/Johannes_Brahms_ninna_nanna_op_49_n_4.ogg/Johannes_Brahms_ninna_nanna_op_49_n_4.ogg.mp3",  // 배경음악 mp3 주소 (비우면 음악·아이콘이 없어요)
+  bgmVolume: 0.35,  // 배경음악 볼륨 (0~1)
   footer: "함께해 주셔서 감사합니다."
 };
 /* ===================== 아래는 건드리지 않아도 돼요 ===================== */
@@ -378,10 +383,39 @@ if (gal && gb && gal.children.length) {
   const center = () => { jump(pos(r + K)); mark(r + K); };
   center(); addEventListener("load", center); addEventListener("resize", center);
 }
-if (C.music) {
-  const au = new Audio(C.music), mb = $("#music"); au.loop = true; mb.style.display = "block";
-  mb.onclick = () => { if (au.paused) { au.play(); mb.textContent = "♪"; } else { au.pause(); mb.textContent = "×"; } };
-  document.addEventListener("click", () => { if (au.paused && !au._t) { au._t = 1; au.play().catch(() => {}); } }, { once: true });
+if (C.bgmUrl) {
+  const au = document.createElement("audio"), mb = $("#music"), vol = Math.min(1, Math.max(0, C.bgmVolume ?? .35));
+  au.src = C.bgmUrl; au.preload = "auto"; au.loop = true; au.setAttribute("playsinline", ""); document.body.appendChild(au);
+  let userPaused = false, want = false, ft = 0;
+  const icon = on => { mb.classList.toggle("off", !on); mb.setAttribute("aria-label", on ? "배경음악 끄기" : "배경음악 켜기"); };
+  const fade = (to, done) => {
+    clearInterval(ft); const from = au.volume, t0 = Date.now();
+    ft = setInterval(() => {
+      const k = Math.min(1, (Date.now() - t0) / 400); au.volume = from + (to - from) * k;
+      if (k >= 1) { clearInterval(ft); if (done) done(); }
+    }, 30);
+  };
+  const play = () => {
+    if (au.paused) au.volume = 0;
+    let p; try { p = au.play(); } catch (e) { return Promise.reject(e); }
+    return Promise.resolve(p).then(() => { want = true; fade(vol); });
+  };
+  const evs = ["pointerdown", "touchend", "click", "keydown"];
+  const unlisten = () => evs.forEach(t => document.removeEventListener(t, gesture, true));
+  const gesture = e => { if (!userPaused && !mb.contains(e.target)) play().then(unlisten).catch(() => {}); };
+  evs.forEach(t => document.addEventListener(t, gesture, true));
+  au.addEventListener("playing", () => icon(true));
+  au.addEventListener("pause", () => icon(false));
+  mb.style.display = "flex";
+  mb.addEventListener("click", () => {
+    if (!au.paused && !userPaused) { userPaused = true; want = false; icon(false); fade(0, () => au.pause()); }
+    else { userPaused = false; play().catch(() => {}); }
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { if (!au.paused) { clearInterval(ft); au.pause(); } }
+    else if (want && !userPaused && au.paused) play().catch(() => {});
+  });
+  play().then(unlisten).catch(() => {});
 }
 </script>
 </body>
