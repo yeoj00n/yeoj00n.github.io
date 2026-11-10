@@ -74,6 +74,12 @@ p{font-size:15px}
 .btns{display:flex;gap:8px;justify-content:center;margin:18px 0 6px;flex-wrap:wrap}
 .btn{border:1px solid var(--gold);background:transparent;color:var(--ink);padding:10px 18px;border-radius:30px;font-size:13px;font-family:inherit;text-decoration:none;cursor:pointer;display:inline-block}
 .btn.fill{background:var(--gold);color:var(--on)}
+.mapbox{position:relative;height:240px;margin-top:18px;border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(var(--gl),.12);background:var(--p1)}
+.mapbox iframe{display:block;width:100%;height:100%;border:0;pointer-events:none}
+.mapbox.on iframe{pointer-events:auto}
+.mapbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.mapbtns .btn{background:rgba(var(--ac),.16);padding:10px 0;text-align:center;border-radius:10px}
+.mapnote{font-size:11px;color:var(--sub);margin-top:6px}
 .info{text-align:left;background:var(--card);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:14px;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 .info b{display:block;font-weight:500;color:var(--gold);font-size:13px}
 .acc{background:var(--card);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;text-align:left;box-shadow:0 4px 14px rgba(var(--gl),.08)}
@@ -109,6 +115,8 @@ const CONFIG = {
   venue: "포포인츠 바이 쉐라톤 서울 구로 2층 PDR-C",
   address: "서울 구로구 디지털로32길 72",
   mapUrl: "",
+  mapQuery: "서울 구로구 디지털로32길 72 포포인츠 바이 쉐라톤 서울 구로",  // 지도·길찾기 검색어
+  mapName: "포포인츠 바이 쉐라톤 서울 구로",  // 티맵 검색 이름
   coverPhoto: "",
   coverBaby: "file_00000000bd4c82099c99e75a4dbca460.png",  // 표지에 서 있는 아기 사진(배경 없는 PNG). 비우면 안 보여요
   greeting: [
@@ -165,6 +173,7 @@ Object.entries(THEMES[themeName] || THEMES.blue).forEach(([k, v]) => document.do
 const ph = (src, cls = "") => `<div class="photo ${cls}">${src ? `<img src="${src}" alt="" loading="lazy">` : "사진을 넣어주세요"}</div>`;
 const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 const d = new Date(C.date);
+const mq = encodeURIComponent(C.mapQuery || C.address), mn = encodeURIComponent(C.mapName || C.venue);
 
 function calendar() {
   const y = d.getFullYear(), m = d.getMonth(), first = new Date(y, m, 1).getDay(), days = new Date(y, m + 1, 0).getDate();
@@ -201,6 +210,9 @@ $("#app").innerHTML = `
   ${C.about.map(a => `<div class="qa reveal"><div class="q">${esc(a.q)}</div>${esc(a.a)}</div>`).join("")}</div></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Location</div><h2 class="reveal">오시는 길</h2>
   <p class="reveal"><b>${esc(C.venue)}</b><br>${esc(C.address)}</p>
+  <div class="mapbox reveal" onclick="this.classList.add('on')"><iframe loading="lazy" title="지도" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${mq}&output=embed"></iframe></div>
+  <div class="mapbtns reveal"><a class="btn" href="https://map.naver.com/p/search/${mq}" target="_blank" rel="noopener">네이버지도</a><a class="btn" href="https://map.kakao.com/link/search/${mq}" target="_blank" rel="noopener">카카오맵</a><a class="btn" href="tmap://search?name=${mn}">티맵</a></div>
+  <div class="mapnote reveal">티맵은 앱이 설치된 폰에서 열려요.</div>
   <div class="btns reveal">${C.mapUrl ? `<a class="btn fill" href="${C.mapUrl}" target="_blank">지도 보기</a>` : ""}<button class="btn" data-copy="${esc(C.address)}">주소 복사</button></div>
   ${C.info.map(i => `<div class="info reveal"><b>${esc(i.title)}</b>${esc(i.text)}</div>`).join("")}</section>
 <section><div class="eyebrow reveal">Gift</div><h2 class="reveal">마음 전하는 곳</h2>
