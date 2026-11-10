@@ -59,18 +59,22 @@ p{font-size:15px}
 .count div{background:var(--card);border-radius:10px;width:66px;padding:12px 0;box-shadow:0 4px 14px rgba(var(--gl),.1)}
 .count b{display:block;font-size:22px;font-weight:500;font-family:'Pretendard',sans-serif}
 .count small{font-size:10px;color:var(--sub);letter-spacing:.1em}
-.gal{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.gal>div:first-child{grid-column:span 2}
-.gal .photo{aspect-ratio:3/4;cursor:pointer}
-.gal>div:first-child .photo{aspect-ratio:4/3}
+.gal{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -28px;padding:0 28px;scroll-padding:0 28px}
+.gal::-webkit-scrollbar{display:none}
+.gal>div{flex:0 0 78%;scroll-snap-align:start}
+.gal .photo{aspect-ratio:3/4;border-radius:12px;cursor:pointer}
+.galcnt{margin-top:12px;font-size:12px;letter-spacing:.1em;color:var(--sub)}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:99}
 #lb img{max-width:94%;max-height:90%;border-radius:4px}
 .fam{display:flex;justify-content:center;gap:14px}
 .fam .c{width:30%}
 .fam .photo{aspect-ratio:1/1;border-radius:50%;margin-bottom:10px}
-.fam .n{font-size:15px}.fam .h{font-size:12px;color:var(--gold)}
-.qa{background:var(--card);border-radius:10px;padding:18px 20px;margin-bottom:12px;text-align:left;box-shadow:0 4px 14px rgba(var(--gl),.08)}
-.qa .q{font-size:12px;color:var(--gold);margin-bottom:2px}
+.fam .n{font-size:18px;font-weight:500}.fam .h{font-size:12px;color:var(--gold)}
+.qa{background:var(--card);border-radius:10px;margin-bottom:12px;text-align:left;box-shadow:0 4px 14px rgba(var(--gl),.08)}
+.qa .q{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:18px 20px;background:none;border:0;font:inherit;font-size:13px;color:var(--gold);text-align:left;cursor:pointer}
+.qa .q em{font-style:normal;font-size:11px;color:var(--sub);white-space:nowrap}
+.qa .a{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 20px}
+.qa .a>div{padding-bottom:18px}
 .btns{display:flex;gap:8px;justify-content:center;margin:18px 0 6px;flex-wrap:wrap}
 .btn{border:1px solid var(--gold);background:transparent;color:var(--ink);padding:10px 18px;border-radius:30px;font-size:13px;font-family:inherit;text-decoration:none;cursor:pointer;display:inline-block}
 .btn.fill{background:var(--gold);color:var(--on)}
@@ -82,13 +86,6 @@ p{font-size:15px}
 .mapnote{font-size:11px;color:var(--sub);margin-top:6px}
 .info{text-align:left;background:var(--card);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:14px;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 .info b{display:block;font-weight:500;color:var(--gold);font-size:13px}
-.acc{background:var(--card);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;text-align:left;box-shadow:0 4px 14px rgba(var(--gl),.08)}
-.acc small{color:var(--sub);font-size:12px}
-.acc .btn{padding:6px 14px}
-form{text-align:left;background:var(--card);padding:22px;border-radius:10px;box-shadow:0 4px 14px rgba(var(--gl),.08)}
-label{display:block;font-size:13px;color:var(--sub);margin:12px 0 4px}
-input,select,textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink)}
-form .btn{width:100%;margin-top:18px}
 footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
 #music{position:fixed;top:14px;right:14px;z-index:50;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.8);font-size:16px;display:none;cursor:pointer}
 </style>
@@ -135,29 +132,22 @@ const CONFIG = {
     { date: "2026.08.21", title: "200일의 축복", photo: "" },
     { date: "2027.02.03", title: "1ST BIRTHDAY", photo: "" }
   ],
-  gallery: ["", "", "", "", "", ""],
+  gallery: ["", "", "", "", "", "", ""],
   family: [
-    { name: "김철순", tag: "#슈퍼맨", photo: "" },
-    { name: "황다희", tag: "#사랑나무", photo: "" },
-    { name: "김여준", tag: "#보물1호", photo: "" }
+    { name: "김철순", tag: "멋진 아빠", photo: "" },
+    { name: "황다희", tag: "사랑 엄마", photo: "" },
+    { name: "김여준", tag: "값진 보물", photo: "" }
   ],
   about: [
-    { q: "태명은?", a: "○○" },
-    { q: "가장 좋아하는 장난감은?", a: "곰돌이 인형" },
-    { q: "여준이에게 바라는 점", a: "건강하고 밝게 자라길 바라요." }
+    { q: "태명은?", a: "황금이" },
+    { q: "가장 좋아하는 시간은?", a: "밥이랑 간식 먹을 때" },
+    { q: "여준이에게 바라는 점", a: "아프지 말고 건강하게 쑥쑥 자라렴!" }
   ],
   info: [
     { title: "교통", text: "2호선 구로디지털단지역 2번 출구 도보 약 3분" },
     { title: "주차", text: "호텔 지하 주차장을 이용할 수 있어요." },
-    { title: "답례품", text: "참석해 주신 분들께 작은 선물을 준비했어요." },
-    { title: "포토부스", text: "가족 사진을 남길 수 있는 공간이 있어요." }
+    { title: "답례품", text: "참석해 주신 분들께 작은 선물을 준비했어요." }
   ],
-  accounts: [
-    { who: "김철순", bank: "은행", number: "000-0000-0000" },
-    { who: "황다희", bank: "은행", number: "000-0000-0000" }
-  ],
-  phone: "",
-  rsvpUrl: "",
   music: "",
   footer: "함께해 주셔서 감사합니다."
 };
@@ -203,26 +193,18 @@ $("#app").innerHTML = `
   <div class="cal reveal">${calendar()}</div>
   <div class="count reveal" id="count"></div><p id="cmsg" class="reveal" style="color:var(--sub);font-size:13px"></p></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Gallery</div><h2 class="reveal">우리의 순간들</h2>
-  <div class="gal">${C.gallery.map((g, i) => `<div class="reveal d${i % 3 + 1}" data-i="${i}">${ph(g)}</div>`).join("")}</div></section>
+  <div class="gal reveal" id="gal">${C.gallery.map((g, i) => `<div data-i="${i}">${ph(g)}</div>`).join("")}</div>
+  <div class="galcnt" id="galcnt"></div></section>
 <section><div class="eyebrow reveal">Introduction</div><h2 class="reveal">우리 가족을 소개합니다</h2>
   <div class="fam">${C.family.map((f, i) => `<div class="c reveal d${i + 1}">${ph(f.photo)}<div class="n">${esc(f.name)}</div><div class="h">${esc(f.tag)}</div></div>`).join("")}</div>
   <div style="margin-top:44px"><div class="eyebrow reveal">About Baby</div>
-  ${C.about.map(a => `<div class="qa reveal"><div class="q">${esc(a.q)}</div>${esc(a.a)}</div>`).join("")}</div></section>
+  ${C.about.map(a => `<div class="qa reveal"><button class="q" type="button" aria-expanded="false"><span>${esc(a.q)}</span><em>더보기 +</em></button><div class="a"><div>${esc(a.a)}</div></div></div>`).join("")}</div></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Location</div><h2 class="reveal">오시는 길</h2>
   <p class="reveal"><b>${esc(C.venue)}</b><br>${esc(C.address)}</p>
   <div class="mapbox reveal" onclick="this.classList.add('on')"><iframe loading="lazy" title="지도" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${mq}&output=embed"></iframe></div>
   <div class="mapbtns reveal"><a class="btn" href="https://map.naver.com/p/search/${mq}" target="_blank" rel="noopener">네이버지도</a><a class="btn" href="https://map.kakao.com/link/search/${mq}" target="_blank" rel="noopener">카카오맵</a><a class="btn" id="tmapBtn" href="https://play.google.com/store/apps/details?id=com.skt.tmap.ku" target="_blank" rel="noopener">티맵</a></div>
   <div class="btns reveal">${C.mapUrl ? `<a class="btn fill" href="${C.mapUrl}" target="_blank">지도 보기</a>` : ""}<button class="btn" data-copy="${esc(C.address)}">주소 복사</button></div>
   ${C.info.map(i => `<div class="info reveal"><b>${esc(i.title)}</b>${esc(i.text)}</div>`).join("")}</section>
-<section><div class="eyebrow reveal">Gift</div><h2 class="reveal">마음 전하는 곳</h2>
-  ${C.accounts.map(a => `<div class="acc reveal"><div><small>${esc(a.who)}</small><br>${esc(a.bank)} ${esc(a.number)}</div><button class="btn" data-copy="${esc(a.number)}">복사</button></div>`).join("")}</section>
-<section style="background:var(--soft)"><div class="eyebrow reveal">R.S.V.P</div><h2 class="reveal">참석 여부</h2>
-  ${C.rsvpUrl ? `<div class="reveal"><a class="btn fill" href="${C.rsvpUrl}" target="_blank">참석 여부 전달하기</a></div>` : `
-  <form class="reveal" id="rsvp"><label>성함</label><input name="n" required>
-  <label>참석 여부</label><select name="a"><option>참석할게요</option><option>아쉽지만 못 가요</option></select>
-  <label>참석 인원</label><input name="c" type="number" min="1" value="1">
-  <label>전하실 말씀</label><textarea name="m" rows="3"></textarea>
-  <button class="btn fill" type="submit">문자로 전달하기</button></form>`}</section>
 <footer>${esc(C.footer)}</footer>`;
 
 const TMAP_PLAY = "https://play.google.com/store/apps/details?id=com.skt.tmap.ku", TMAP_IOS = "https://apps.apple.com/kr/app/tmap/id431589174";
@@ -266,13 +248,21 @@ document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
     const a = document.createElement("textarea"); a.value = t; document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove();
   }).finally(() => { const o = b.textContent; b.textContent = "복사됨"; setTimeout(() => b.textContent = o, 1400); });
 });
-const f = $("#rsvp");
-if (f) f.onsubmit = e => {
-  e.preventDefault(); const v = new FormData(f);
-  const body = `[${C.babyName} 돌잔치] ${v.get("n")} / ${v.get("a")} / ${v.get("c")}명 ${v.get("m") ? "/ " + v.get("m") : ""}`;
-  if (!C.phone) { alert("받는 번호가 아직 설정되지 않았어요."); return; }
-  location.href = `sms:${C.phone}?body=${encodeURIComponent(body)}`;
-};
+const gal = $("#gal"), gc = $("#galcnt");
+if (gal && gc && gal.children.length) {
+  const items = [...gal.children], upd = () => {
+    const step = items[0].offsetWidth + 10, max = gal.scrollWidth - gal.clientWidth;
+    const i = gal.scrollLeft >= max - 2 ? items.length - 1 : Math.min(items.length - 1, Math.round(gal.scrollLeft / step));
+    gc.textContent = `${i + 1} / ${items.length}`;
+  };
+  gal.addEventListener("scroll", upd, { passive: true }); upd();
+}
+document.querySelectorAll(".qa .q").forEach(b => b.onclick = () => {
+  const p = b.parentElement, a = p.querySelector(".a"), o = p.classList.toggle("open");
+  a.style.maxHeight = o ? a.scrollHeight + "px" : "0";
+  b.setAttribute("aria-expanded", o);
+  b.querySelector("em").textContent = o ? "접기 −" : "더보기 +";
+});
 if (C.music) {
   const au = new Audio(C.music), mb = $("#music"); au.loop = true; mb.style.display = "block";
   mb.onclick = () => { if (au.paused) { au.play(); mb.textContent = "♪"; } else { au.pause(); mb.textContent = "×"; } };
