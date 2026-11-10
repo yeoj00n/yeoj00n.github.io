@@ -70,8 +70,17 @@ p{font-size:15px}
 .galbar button:before{content:"";position:absolute;left:0;right:0;top:10px;height:3px;border-radius:3px;background:#d3dbe3;transition:background .25s}
 .galbar button.on{width:28px}
 .galbar button.on:before{background:var(--gold)}
-#lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:99}
-#lb img{max-width:94%;max-height:90%;border-radius:4px}
+.galhint{margin-top:8px;font-size:12px;line-height:1.5;letter-spacing:.02em;color:#9aa4ae;text-align:center}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:2147483000;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s .25s;overscroll-behavior:contain;touch-action:pan-y}
+#lb.open{opacity:1;visibility:visible;transition:opacity .25s ease}
+#lb img{display:block;max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);object-fit:contain;-webkit-user-select:none;user-select:none}
+#lb button{position:absolute;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+#lb button svg{width:22px;height:22px;stroke:#fff;stroke-width:2;stroke-linecap:round;fill:none}
+#lb .lbx{top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right))}
+#lb .lbp,#lb .lbn{top:50%;margin-top:-22px}
+#lb .lbp{left:max(8px,env(safe-area-inset-left))}
+#lb .lbn{right:max(8px,env(safe-area-inset-right))}
+#lb.one .lbp,#lb.one .lbn{display:none}
 .fam{display:flex;justify-content:center;gap:14px}
 .fam .c{width:30%}
 .fam .photo{aspect-ratio:1/1;border-radius:50%;margin-bottom:10px}
@@ -103,7 +112,7 @@ footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
 <body>
 <button id="music" aria-label="배경음악">♪</button>
 <div id="app"></div>
-<div id="lb"><img alt=""></div>
+<div id="lb" role="dialog" aria-modal="true" aria-hidden="true"><img alt=""><button type="button" class="lbp" aria-label="이전 사진"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="lbn" aria-label="다음 사진"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button><button type="button" class="lbx" aria-label="닫기"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
 
 <script>
 /* =====================================================
@@ -144,6 +153,7 @@ const CONFIG = {
     { date: "2027.02.03", title: "1ST BIRTHDAY", photo: "" }
   ],
   gallery: ["", "", "", "", "", "", ""],
+  galleryHint: "사진을 누르면 크게 볼 수 있어요",  // 갤러리 막대 아래 안내 문구 (비우면 안 보여요)
   family: [
     { name: "김철순", tag: "멋진 아빠", photo: "" },
     { name: "황다희", tag: "사랑 엄마", photo: "" },
@@ -205,7 +215,7 @@ $("#app").innerHTML = `
   <div class="count reveal" id="count"></div><p id="cmsg" class="reveal" style="color:var(--sub);font-size:13px"></p></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Gallery</div><h2 class="reveal">우리의 순간들</h2>
   <div class="gal reveal" id="gal">${C.gallery.map((g, i) => `<div data-i="${i}">${ph(g)}</div>`).join("")}</div>
-  <div class="galbar" id="galbar"></div></section>
+  <div class="galbar" id="galbar"></div>${C.galleryHint ? `<div class="galhint">${esc(C.galleryHint)}</div>` : ""}</section>
 <section><div class="eyebrow reveal">Introduction</div><h2 class="reveal">우리 가족을 소개합니다</h2>
   <div class="fam">${C.family.map((f, i) => `<div class="c reveal d${i + 1}">${ph(f.photo)}<div class="n">${esc(f.name)}</div><div class="h">${esc(f.tag)}</div></div>`).join("")}</div>
   <div style="margin-top:44px"><div class="eyebrow reveal">About Baby</div>
@@ -300,11 +310,47 @@ function tick() {
   msg.textContent = `${C.babyName}이의 생일파티가 ${v[0]}일 남았습니다.`;
 }
 tick(); setInterval(tick, 1000);
-document.querySelectorAll(".gal [data-i]").forEach(e => e.onclick = () => {
-  const src = C.gallery[e.dataset.i]; if (!src) return;
-  $("#lb img").src = src; $("#lb").style.display = "flex";
+const lb = $("#lb"), lbImg = lb.querySelector("img");
+let lbList = [], lbK = 0, lbPrevFocus = null, lbLock = null;
+const lbShow = k => { lbK = (k + lbList.length) % lbList.length; lbImg.src = lbList[lbK]; lb.classList.toggle("one", lbList.length < 2); };
+function openLightbox(src, gi) {
+  if (!src) return;
+  lbList = C.gallery.filter(Boolean);
+  let k = gi != null && C.gallery[gi] === src ? C.gallery.slice(0, gi).filter(Boolean).length : lbList.indexOf(src);
+  if (k < 0) { lbList = [src]; k = 0; }
+  lbShow(k);
+  if (!lb.classList.contains("open")) {
+    lbPrevFocus = document.activeElement;
+    lbLock = [document.documentElement.style.overflow, document.body.style.overflow];
+    document.documentElement.style.overflow = document.body.style.overflow = "hidden";
+    lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
+    lb.querySelector(".lbx").focus({ preventScroll: true });
+  }
+}
+function closeLightbox() {
+  if (!lb.classList.contains("open")) return;
+  lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true");
+  document.documentElement.style.overflow = lbLock[0]; document.body.style.overflow = lbLock[1];
+  if (lbPrevFocus && lbPrevFocus.focus) lbPrevFocus.focus({ preventScroll: true });
+}
+document.querySelectorAll(".gal [data-i]").forEach(e => e.onclick = () => openLightbox(C.gallery[e.dataset.i], +e.dataset.i));
+lb.onclick = e => { if (e.target === lb) closeLightbox(); };
+lb.querySelector(".lbx").onclick = closeLightbox;
+lb.querySelector(".lbp").onclick = () => lbShow(lbK - 1);
+lb.querySelector(".lbn").onclick = () => lbShow(lbK + 1);
+document.addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key === "Escape") closeLightbox();
+  else if (e.key === "ArrowLeft") lbShow(lbK - 1);
+  else if (e.key === "ArrowRight") lbShow(lbK + 1);
 });
-$("#lb").onclick = () => $("#lb").style.display = "none";
+let lbX = 0, lbY = 0;
+lb.addEventListener("touchstart", e => { lbX = e.touches[0].clientX; lbY = e.touches[0].clientY; }, { passive: true });
+lb.addEventListener("touchend", e => {
+  const t = e.changedTouches[0], dx = t.clientX - lbX, dy = t.clientY - lbY;
+  if (lbList.length > 1 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) lbShow(lbK + (dx < 0 ? 1 : -1));
+}, { passive: true });
+lb.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
   const t = b.dataset.copy;
   (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(() => {
