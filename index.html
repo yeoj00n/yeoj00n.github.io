@@ -44,9 +44,9 @@ p{font-size:15px}
 .tl .photo{height:150px;margin-top:8px}
 .cal{background:var(--card);border-radius:10px;padding:22px 16px;margin:0 0 28px;box-shadow:0 4px 20px rgba(var(--gl),.1)}
 .cal .m{font-size:15px;margin-bottom:12px}
-.cal table{width:100%;border-collapse:collapse;font-size:13px}
+.cal table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
 .cal th{color:var(--sub);font-weight:400;padding:6px 0}
-.cal td{padding:8px 0}
+.cal td{padding:0;height:42px;text-align:center;vertical-align:middle}
 .cal td.sun,.cal th:first-child{color:#d77}
 .cal td.on span{display:inline-block;width:30px;height:30px;line-height:30px;border-radius:50%;background:var(--gold);color:var(--on);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--ac),.5)}50%{box-shadow:0 0 0 9px rgba(var(--ac),0)}}
@@ -133,7 +133,7 @@ const CONFIG = {
     { q: "여준이에게 바라는 점", a: "건강하고 밝게 자라길 바라요." }
   ],
   info: [
-    { title: "교통", text: "2호선 구로디지털단지역 2번 출구에서 도보 약 3분이에요." },
+    { title: "교통", text: "2호선 구로디지털단지역 2번 출구 도보 약 3분" },
     { title: "주차", text: "호텔 지하 주차장을 이용할 수 있어요." },
     { title: "답례품", text: "참석해 주신 분들께 작은 선물을 준비했어요." },
     { title: "포토부스", text: "가족 사진을 남길 수 있는 공간이 있어요." }
