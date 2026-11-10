@@ -28,6 +28,8 @@ p{font-size:15px}
 #cover.hasbaby{justify-content:flex-start}
 #cover.hasbaby .txt{padding:96px 28px 0}
 #cover .baby{position:absolute;left:0;right:0;bottom:0;margin:0 auto;z-index:1;height:45%;width:auto;max-width:80%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 8px 14px rgba(var(--sh),.35));pointer-events:none;opacity:0;animation:babyIn 1.2s 1.6s ease-out forwards,babyFloat 4s 2.8s ease-in-out infinite}
+#cover .baby{--bw:min(150%,calc((100vh - 292px)*1.063));width:var(--bw);max-width:none;height:auto;left:50%;right:auto;margin:0 0 0 calc(var(--bw)/-2)}
+#cover .scroll{opacity:1;text-shadow:0 1px 3px rgba(var(--sh),.95),0 0 8px rgba(var(--sh),.7)}
 @keyframes babyIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes babyFloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
 @keyframes zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
