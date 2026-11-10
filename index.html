@@ -59,11 +59,16 @@ p{font-size:15px}
 .count div{background:var(--card);border-radius:10px;width:66px;padding:12px 0;box-shadow:0 4px 14px rgba(var(--gl),.1)}
 .count b{display:block;font-size:22px;font-weight:500;font-family:'Pretendard',sans-serif}
 .count small{font-size:10px;color:var(--sub);letter-spacing:.1em}
-.gal{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -28px;padding:0 28px;scroll-padding:0 28px}
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -28px;position:relative;overscroll-behavior-x:contain}
 .gal::-webkit-scrollbar{display:none}
-.gal>div{flex:0 0 78%;scroll-snap-align:start}
+.gal::before,.gal::after{content:"";flex:0 0 calc(11% - 5px)}
+.gal>div{flex:0 0 78%;margin:0 5px;scroll-snap-align:center;scroll-snap-stop:always}
 .gal .photo{aspect-ratio:3/4;border-radius:12px;cursor:pointer}
-.galcnt{margin-top:12px;font-size:12px;letter-spacing:.1em;color:var(--sub)}
+.galbar{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:6px}
+.galbar button{position:relative;flex:none;width:18px;height:23px;padding:0;border:0;background:none;cursor:pointer;transition:width .25s;-webkit-tap-highlight-color:transparent}
+.galbar button:before{content:"";position:absolute;left:0;right:0;top:10px;height:3px;border-radius:3px;background:#d3dbe3;transition:background .25s}
+.galbar button.on{width:28px}
+.galbar button.on:before{background:var(--gold)}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:99}
 #lb img{max-width:94%;max-height:90%;border-radius:4px}
 .fam{display:flex;justify-content:center;gap:14px}
@@ -197,7 +202,7 @@ $("#app").innerHTML = `
   <div class="count reveal" id="count"></div><p id="cmsg" class="reveal" style="color:var(--sub);font-size:13px"></p></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Gallery</div><h2 class="reveal">우리의 순간들</h2>
   <div class="gal reveal" id="gal">${C.gallery.map((g, i) => `<div data-i="${i}">${ph(g)}</div>`).join("")}</div>
-  <div class="galcnt" id="galcnt"></div></section>
+  <div class="galbar" id="galbar"></div></section>
 <section><div class="eyebrow reveal">Introduction</div><h2 class="reveal">우리 가족을 소개합니다</h2>
   <div class="fam">${C.family.map((f, i) => `<div class="c reveal d${i + 1}">${ph(f.photo)}<div class="n">${esc(f.name)}</div><div class="h">${esc(f.tag)}</div></div>`).join("")}</div>
   <div style="margin-top:44px"><div class="eyebrow reveal">About Baby</div>
@@ -280,14 +285,26 @@ document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
     const a = document.createElement("textarea"); a.value = t; document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove();
   }).finally(() => { const o = b.textContent; b.textContent = "복사됨"; setTimeout(() => b.textContent = o, 1400); });
 });
-const gal = $("#gal"), gc = $("#galcnt");
-if (gal && gc && gal.children.length) {
-  const items = [...gal.children], upd = () => {
-    const step = items[0].offsetWidth + 10, max = gal.scrollWidth - gal.clientWidth;
-    const i = gal.scrollLeft >= max - 2 ? items.length - 1 : Math.min(items.length - 1, Math.round(gal.scrollLeft / step));
-    gc.textContent = `${i + 1} / ${items.length}`;
-  };
-  gal.addEventListener("scroll", upd, { passive: true }); upd();
+const gal = $("#gal"), gb = $("#galbar");
+if (gal && gb && gal.children.length) {
+  const items = [...gal.children], n = items.length, K = Math.min(2, n);
+  const mk = s => { const c = s.cloneNode(true); c.setAttribute("aria-hidden", "true"); c.onclick = s.onclick; return c; };
+  gal.prepend(...items.slice(-K).map(mk)); gal.append(...items.slice(0, K).map(mk));
+  const all = [...gal.children];
+  const pos = a => all[a].offsetLeft + all[a].offsetWidth / 2 - gal.clientWidth / 2;
+  const bars = items.map((_, i) => { const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", `${i + 1} / ${n}`); b.onclick = () => gal.scrollTo({ left: pos(i + K), behavior: "smooth" }); gb.appendChild(b); return b; });
+  const cur = () => { let b = 0, bd = 1e9; all.forEach((e, i) => { const d = Math.abs(pos(i) - gal.scrollLeft); if (d < bd) { bd = d; b = i; } }); return b; };
+  let touching = false, timer, r = 0;
+  const mark = a => { r = ((a - K) % n + n) % n; bars.forEach((b, i) => { b.classList.toggle("on", i === r); if (i === r) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); }); };
+  const jump = x => { gal.style.scrollSnapType = "none"; gal.style.scrollBehavior = "auto"; gal.scrollLeft = x; void gal.offsetWidth; gal.style.scrollSnapType = ""; };
+  const settle = () => { if (touching) return; const a = cur(); if (a < K) jump(pos(a + n)); else if (a >= K + n) jump(pos(a - n)); mark(cur()); };
+  const later = ms => { clearTimeout(timer); timer = setTimeout(settle, ms); };
+  gal.addEventListener("scroll", () => { mark(cur()); later(120); }, { passive: true });
+  gal.addEventListener("scrollend", settle);
+  gal.addEventListener("touchstart", () => { touching = true; clearTimeout(timer); }, { passive: true });
+  ["touchend", "touchcancel"].forEach(t => gal.addEventListener(t, () => { touching = false; later(150); }, { passive: true }));
+  const center = () => { jump(pos(r + K)); mark(r + K); };
+  center(); addEventListener("load", center); addEventListener("resize", center);
 }
 document.querySelectorAll(".qa .q").forEach(b => b.onclick = () => {
   const p = b.parentElement, a = p.querySelector(".a"), o = p.classList.toggle("open");
