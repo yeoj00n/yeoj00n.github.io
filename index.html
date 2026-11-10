@@ -25,6 +25,11 @@ p{font-size:15px}
 #cover h1{font-size:30px;font-weight:500;margin:10px 0;opacity:0;animation:up 1.2s .9s forwards}
 #cover .when{font-size:14px;opacity:0;animation:up 1.2s 1.4s forwards}
 #cover .scroll{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;font-size:11px;letter-spacing:.2em;color:#fff;opacity:.8;animation:bob 2s infinite}
+#cover.hasbaby{justify-content:flex-start}
+#cover.hasbaby .txt{padding:96px 28px 0}
+#cover .baby{position:absolute;left:0;right:0;bottom:0;margin:0 auto;z-index:1;height:45%;width:auto;max-width:80%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 8px 14px rgba(var(--sh),.35));pointer-events:none;opacity:0;animation:babyIn 1.2s 1.6s ease-out forwards,babyFloat 4s 2.8s ease-in-out infinite}
+@keyframes babyIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes babyFloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
 @keyframes zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
 @keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
@@ -105,6 +110,7 @@ const CONFIG = {
   address: "서울 구로구 디지털로32길 72",
   mapUrl: "",
   coverPhoto: "",
+  coverBaby: "file_00000000bd4c82099c99e75a4dbca460.png",  // 표지에 서 있는 아기 사진(배경 없는 PNG). 비우면 안 보여요
   greeting: [
     "작고 소중한 아이가 세상에 와서",
     "벌써 첫번째 생일을 맞았습니다.",
@@ -173,8 +179,9 @@ function calendar() {
 }
 
 $("#app").innerHTML = `
-<section id="cover">
+<section id="cover"${C.coverBaby ? ' class="hasbaby"' : ""}>
   <div class="bg">${C.coverPhoto ? `<img src="${C.coverPhoto}" alt="">` : ""}</div><div class="shade"></div>
+  ${C.coverBaby ? `<img class="baby" src="${C.coverBaby}" alt="">` : ""}
   <div class="txt"><div class="small">FIRST BIRTHDAY</div><h1>${esc(C.title)}</h1><div class="when">${esc(C.dateText)}<br>${esc(C.venue)}</div></div>
   <div class="scroll">SCROLL</div>
 </section>
