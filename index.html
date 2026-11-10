@@ -18,11 +18,11 @@ h2{font-weight:500;font-size:22px;margin-bottom:28px}
 p{font-size:15px}
 .photo{width:100%;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;color:var(--pc);font-size:13px;overflow:hidden;border-radius:6px}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
-#cover{height:100vh;height:100svh;min-height:640px;padding:clamp(28px,7svh,56px) 0 clamp(12px,2.5svh,22px);display:flex;flex-direction:column;justify-content:flex-start;text-align:center;color:#3a3a3a;background:#fff;overflow:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+#cover{height:100vh;height:100svh;min-height:640px;padding:calc(clamp(28px,7svh,56px) + 22px) 0 clamp(12px,2.5svh,22px);display:flex;flex-direction:column;justify-content:flex-start;text-align:center;color:#3a3a3a;background:#fff;overflow:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #cover:not(.hasbaby){justify-content:center}
 #cover .txt{position:relative;z-index:2;padding:0 16px;flex:none}
-#cover .small{font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:15px;font-weight:300;letter-spacing:.14em;color:#b4bbc3;opacity:0;animation:up 1.2s .4s forwards}
-#cover h1{font-size:clamp(16px,6.2vw,27px);font-weight:500;line-height:1.4;color:var(--gold);margin:6px 0 0;white-space:nowrap;opacity:0;animation:up 1.2s .9s forwards}
+#cover .small{font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:18px;font-weight:300;letter-spacing:.14em;color:#b4bbc3;opacity:0;animation:up 1.2s .4s forwards}
+#cover h1{font-size:clamp(18px,7.4vw,32px);font-weight:500;line-height:1.4;color:var(--gold);margin:6px 0 0;white-space:nowrap;opacity:0;animation:up 1.2s .9s forwards}
 #cover .stage{position:relative;z-index:0;width:100%;flex:1;min-height:0;margin:12px 0 8px;overflow:hidden;background:linear-gradient(180deg,#fff 0%,var(--cv1) 38%,var(--cv0) 62%,var(--cv1) 86%,#fff 100%)}
 #cover .bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent)}
 #cover .when{font-size:15.5px;line-height:1.7;color:#3a3a3a;overflow-wrap:break-word;word-break:keep-all;opacity:0;animation:up 1.2s 1.4s forwards}
@@ -210,7 +210,7 @@ $("#app").innerHTML = `
   <div class="txt"><div class="when">${esc(C.dateText)}<br>${esc(C.venue)}</div></div>
   <div class="scroll">SCROLL</div>
 </section>
-<section class="greet"><div class="eyebrow reveal">Invitation</div><h2 class="reveal d1">초대합니다</h2>
+<section class="greet"><div class="eyebrow reveal" style="text-transform:none">Invitation</div><h2 class="reveal d1">여준이의 돌잔치에 초대합니다</h2>
   ${C.greeting.map((l, i) => `<p class="reveal d${i % 3 + 1}">${l ? esc(l) : "&nbsp;"}</p>`).join("")}
   <div class="parents reveal">${esc(C.dad)} · ${esc(C.mom)}</div></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Story</div><h2 class="reveal">${esc(C.timelineTitle)}</h2>
