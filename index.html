@@ -75,11 +75,9 @@ p{font-size:15px}
 .fam .c{width:30%}
 .fam .photo{aspect-ratio:1/1;border-radius:50%;margin-bottom:10px}
 .fam .n{font-size:18px;font-weight:500}.fam .h{font-size:12px;color:var(--gold)}
-.qa{background:var(--card);border-radius:10px;margin-bottom:12px;text-align:left;box-shadow:0 4px 14px rgba(var(--gl),.08)}
-.qa .q{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:18px 20px;background:none;border:0;font:inherit;font-size:13px;color:var(--gold);text-align:left;cursor:pointer}
-.qa .q em{font-style:normal;font-size:11px;color:var(--sub);white-space:nowrap}
-.qa .a{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 20px}
-.qa .a>div{padding-bottom:18px}
+.qa{background:var(--card);border-radius:10px;margin-bottom:12px;padding:18px 20px;text-align:center;box-shadow:0 4px 14px rgba(var(--gl),.08)}
+.qa .q{font-size:15px;font-weight:500;line-height:1.6;color:var(--gold);margin-bottom:8px}
+.qa .a{font-size:15px;line-height:1.9;color:#444;white-space:pre-line}
 .btns{display:flex;gap:8px;justify-content:center;margin:18px 0 6px;flex-wrap:wrap}
 .btn{border:1px solid var(--gold);background:transparent;color:var(--ink);padding:10px 18px;border-radius:30px;font-size:13px;font-family:inherit;text-decoration:none;cursor:pointer;display:inline-block}
 .btn.fill{background:var(--gold);color:var(--on)}
@@ -147,9 +145,9 @@ const CONFIG = {
     { name: "김여준", tag: "값진 보물", photo: "" }
   ],
   about: [
-    { q: "태명은?", a: "황금이" },
-    { q: "가장 좋아하는 시간은?", a: "밥이랑 간식 먹을 때" },
-    { q: "여준이에게 바라는 점", a: "아프지 말고 건강하게 쑥쑥 자라렴!" }
+        { q: "태명은 무엇이었나요?", a: "여준이의 태명은 \"황금이\"였어요!" },
+    { q: "가장 좋아하는 시간은 언제인가요?", a: "여준이가 가장 좋아하는 시간은\n밥이랑 간식 먹을 때예요!" },
+    { q: "여준이에게 바라는 점은 무엇인가요?", a: "아프지 말고 건강하게 쑥쑥 자라렴!" }
   ],
   info: [
     { title: "교통", text: "2호선 구로디지털단지역 2번 출구 도보 약 3분" },
@@ -206,7 +204,7 @@ $("#app").innerHTML = `
 <section><div class="eyebrow reveal">Introduction</div><h2 class="reveal">우리 가족을 소개합니다</h2>
   <div class="fam">${C.family.map((f, i) => `<div class="c reveal d${i + 1}">${ph(f.photo)}<div class="n">${esc(f.name)}</div><div class="h">${esc(f.tag)}</div></div>`).join("")}</div>
   <div style="margin-top:44px"><div class="eyebrow reveal">About Baby</div>
-  ${C.about.map(a => `<div class="qa reveal"><button class="q" type="button" aria-expanded="false"><span>${esc(a.q)}</span><em>더보기 +</em></button><div class="a"><div>${esc(a.a)}</div></div></div>`).join("")}</div></section>
+    ${C.about.map(a => `<div class="qa reveal"><div class="q">Q. ${esc(a.q)}</div><div class="a">${esc(a.a)}</div></div>`).join("")}</div></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Location</div><h2 class="reveal">오시는 길</h2>
   <p class="reveal"><b>${esc(C.venue)}</b><br>${esc(C.address)}</p>
   <div class="mapbox reveal" onclick="this.classList.add('on')"><div id="kmap" role="img" aria-label="지도"></div></div>
@@ -306,12 +304,6 @@ if (gal && gb && gal.children.length) {
   const center = () => { jump(pos(r + K)); mark(r + K); };
   center(); addEventListener("load", center); addEventListener("resize", center);
 }
-document.querySelectorAll(".qa .q").forEach(b => b.onclick = () => {
-  const p = b.parentElement, a = p.querySelector(".a"), o = p.classList.toggle("open");
-  a.style.maxHeight = o ? a.scrollHeight + "px" : "0";
-  b.setAttribute("aria-expanded", o);
-  b.querySelector("em").textContent = o ? "접기 −" : "더보기 +";
-});
 if (C.music) {
   const au = new Audio(C.music), mb = $("#music"); au.loop = true; mb.style.display = "block";
   mb.onclick = () => { if (au.paused) { au.play(); mb.textContent = "♪"; } else { au.pause(); mb.textContent = "×"; } };
