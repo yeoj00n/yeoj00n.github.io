@@ -211,8 +211,7 @@ $("#app").innerHTML = `
 <section style="background:var(--soft)"><div class="eyebrow reveal">Location</div><h2 class="reveal">오시는 길</h2>
   <p class="reveal"><b>${esc(C.venue)}</b><br>${esc(C.address)}</p>
   <div class="mapbox reveal" onclick="this.classList.add('on')"><iframe loading="lazy" title="지도" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${mq}&output=embed"></iframe></div>
-  <div class="mapbtns reveal"><a class="btn" href="https://map.naver.com/p/search/${mq}" target="_blank" rel="noopener">네이버지도</a><a class="btn" href="https://map.kakao.com/link/search/${mq}" target="_blank" rel="noopener">카카오맵</a><a class="btn" href="tmap://search?name=${mn}">티맵</a></div>
-  <div class="mapnote reveal">티맵은 앱이 설치된 폰에서 열려요.</div>
+  <div class="mapbtns reveal"><a class="btn" href="https://map.naver.com/p/search/${mq}" target="_blank" rel="noopener">네이버지도</a><a class="btn" href="https://map.kakao.com/link/search/${mq}" target="_blank" rel="noopener">카카오맵</a><a class="btn" id="tmapBtn" href="https://play.google.com/store/apps/details?id=com.skt.tmap.ku" target="_blank" rel="noopener">티맵</a></div>
   <div class="btns reveal">${C.mapUrl ? `<a class="btn fill" href="${C.mapUrl}" target="_blank">지도 보기</a>` : ""}<button class="btn" data-copy="${esc(C.address)}">주소 복사</button></div>
   ${C.info.map(i => `<div class="info reveal"><b>${esc(i.title)}</b>${esc(i.text)}</div>`).join("")}</section>
 <section><div class="eyebrow reveal">Gift</div><h2 class="reveal">마음 전하는 곳</h2>
@@ -226,6 +225,19 @@ $("#app").innerHTML = `
   <button class="btn fill" type="submit">문자로 전달하기</button></form>`}</section>
 <footer>${esc(C.footer)}</footer>`;
 
+const TMAP_PLAY = "https://play.google.com/store/apps/details?id=com.skt.tmap.ku", TMAP_IOS = "https://apps.apple.com/kr/app/tmap/id431589174";
+const tmapLink = ua => /Android/i.test(ua) ? `intent://search?name=${mn}#Intent;scheme=tmap;package=com.skt.tmap.ku;S.browser_fallback_url=${encodeURIComponent(TMAP_PLAY)};end`
+  : /iPhone|iPad|iPod/i.test(ua) ? `tmap://search?name=${mn}` : TMAP_PLAY;
+const tmapBtn = $("#tmapBtn");
+if (tmapBtn) tmapBtn.onclick = e => {
+  e.preventDefault();
+  const ua = navigator.userAgent, url = tmapLink(ua);
+  if (url === TMAP_PLAY) window.open(url, "_blank", "noopener");
+  else {
+    location.href = url;
+    if (/iPhone|iPad|iPod/i.test(ua)) setTimeout(() => { if (!document.hidden) location.href = TMAP_IOS; }, 1500);
+  }
+};
 const cv = $("#cover"), sy = ["🎈", "✨", "💙", "⭐", "🎈"];
 for (let i = 0; i < 12; i++) {
   const e = document.createElement("div"); e.className = "float"; e.textContent = sy[i % sy.length];
