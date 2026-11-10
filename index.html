@@ -78,6 +78,10 @@ p{font-size:15px}
 .qa{background:var(--card);border-radius:10px;margin-bottom:12px;padding:18px 20px;text-align:center;box-shadow:0 4px 14px rgba(var(--gl),.08)}
 .qa .q{font-size:15px;font-weight:500;line-height:1.6;color:var(--gold);margin-bottom:8px}
 .qa .a{font-size:15px;line-height:1.9;color:#444;white-space:pre-line}
+.qmore{max-height:0;opacity:0;overflow:hidden;visibility:hidden;transition:max-height .5s ease,opacity .4s ease,visibility 0s .5s}
+.qmore.open{opacity:1;visibility:visible;transition:max-height .5s ease,opacity .4s ease .1s,visibility 0s}
+.qtoggle{text-align:center;margin:6px 0 0}
+.qtoggle .btn{color:var(--gold);font-size:14px;background:rgba(var(--ac),.08)}
 .btns{display:flex;gap:8px;justify-content:center;margin:18px 0 6px;flex-wrap:wrap}
 .btn{border:1px solid var(--gold);background:transparent;color:var(--ink);padding:10px 18px;border-radius:30px;font-size:13px;font-family:inherit;text-decoration:none;cursor:pointer;display:inline-block}
 .btn.fill{background:var(--gold);color:var(--on)}
@@ -204,7 +208,7 @@ $("#app").innerHTML = `
 <section><div class="eyebrow reveal">Introduction</div><h2 class="reveal">우리 가족을 소개합니다</h2>
   <div class="fam">${C.family.map((f, i) => `<div class="c reveal d${i + 1}">${ph(f.photo)}<div class="n">${esc(f.name)}</div><div class="h">${esc(f.tag)}</div></div>`).join("")}</div>
   <div style="margin-top:44px"><div class="eyebrow reveal">About Baby</div>
-    ${C.about.map(a => `<div class="qa reveal"><div class="q">Q. ${esc(a.q)}</div><div class="a">${esc(a.a)}</div></div>`).join("")}</div></section>
+    ${(card => card(C.about[0], "reveal") + `<div class="qmore" id="qmore">${C.about.slice(1).map(a => card(a, "")).join("")}</div><div class="qtoggle reveal"><button type="button" class="btn" id="qbtn" aria-expanded="false" aria-controls="qmore">더보기 +</button></div>`)((a, c) => `<div class="qa ${c}"><div class="q">Q. ${esc(a.q)}</div><div class="a">${esc(a.a)}</div></div>`)}</div></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Location</div><h2 class="reveal">오시는 길</h2>
   <p class="reveal"><b>${esc(C.venue)}</b><br>${esc(C.address)}</p>
   <div class="mapbox reveal" onclick="this.classList.add('on')"><div id="kmap" role="img" aria-label="지도"></div></div>
@@ -264,6 +268,15 @@ for (let i = 0; i < 12; i++) {
 }
 const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("show"); io.unobserve(x.target); } }), { threshold: .15 });
 document.querySelectorAll(".reveal").forEach(e => io.observe(e));
+(() => {
+  const b = $("#qbtn"), m = $("#qmore"); if (!b || !m) return;
+  const fit = () => { m.style.maxHeight = m.classList.contains("open") ? m.scrollHeight + "px" : ""; };
+  b.addEventListener("click", () => {
+    const o = !m.classList.contains("open");
+    m.classList.toggle("open", o); b.setAttribute("aria-expanded", o); b.textContent = o ? "접기 −" : "더보기 +"; fit();
+  });
+  addEventListener("resize", fit);
+})();
 function tick() {
   const s = Math.floor((d - new Date()) / 1000), msg = $("#cmsg");
   if (s < 0) { $("#count").innerHTML = ""; msg.textContent = "오늘을 함께해 주셔서 감사합니다."; return; }
