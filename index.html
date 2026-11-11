@@ -92,9 +92,9 @@ p{font-size:15px}
 .galbar button.on{width:28px}
 .galbar button.on:before{background:var(--gold)}
 .galhint{margin:-22px 0 18px;font-size:13px;line-height:1.5;letter-spacing:.02em;color:#9aa4ae;text-align:center}
-#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:2147483000;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s .25s;overscroll-behavior:contain;touch-action:pan-y}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:2147483000;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s .25s;overscroll-behavior:contain;touch-action:none}
 #lb.open{opacity:1;visibility:visible;transition:opacity .25s ease}
-#lb img{display:block;max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);object-fit:contain;-webkit-user-select:none;user-select:none}
+#lb img{display:block;max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);object-fit:contain;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;touch-action:none;transform-origin:50% 50%;will-change:transform}
 #lb button{position:absolute;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 #lb button svg{width:22px;height:22px;stroke:#fff;stroke-width:2;stroke-linecap:round;fill:none}
 #lb .lbx{top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right))}
@@ -408,7 +408,29 @@ function tick() {
 tick(); setInterval(tick, 1000);
 const lb = $("#lb"), lbImg = lb.querySelector("img");
 let lbList = [], lbK = 0, lbPrevFocus = null, lbLock = null;
-const lbShow = k => { lbK = (k + lbList.length) % lbList.length; lbImg.src = lbList[lbK]; lb.classList.toggle("one", lbList.length < 2); };
+let lbS = 1, lbTX = 0, lbTY = 0, lbG = null, lbTap = null, lbSup = 0, lbCloseT = 0, lbWC = 0;
+const lbPtr = new Map(), lbMax = 4, lbNow = () => performance.now(), lbLim = (v, a, b) => Math.min(b, Math.max(a, v));
+const lbRender = anim => {
+  lbImg.style.transition = anim ? "transform .2s ease" : "none";
+  lbImg.style.transform = "translate(" + lbTX + "px," + lbTY + "px) scale(" + lbS + ")";
+};
+const lbClamp = () => {
+  const mx = Math.max(0, (lbImg.offsetWidth * lbS - lb.clientWidth) / 2), my = Math.max(0, (lbImg.offsetHeight * lbS - lb.clientHeight) / 2);
+  lbTX = lbLim(lbTX, -mx, mx); lbTY = lbLim(lbTY, -my, my);
+};
+const lbBusy = () => { clearTimeout(lbWC); lbImg.style.willChange = "transform"; };
+const lbIdle = () => { clearTimeout(lbWC); lbWC = setTimeout(() => { if (!lbPtr.size && lbS > 1) lbImg.style.willChange = "auto"; }, 260); };
+const lbZoomAt = (x, y, ns) => {
+  const r = lb.getBoundingClientRect(), fx = x - r.left - r.width / 2, fy = y - r.top - r.height / 2, k = ns / lbS;
+  lbTX = fx - k * (fx - lbTX); lbTY = fy - k * (fy - lbTY); lbS = ns;
+};
+const lbReset = () => { lbS = 1; lbTX = lbTY = 0; lbG = null; lbTap = null; lbPtr.clear(); lbImg.style.willChange = "transform"; lbRender(false); };
+const lbToggle = (x, y) => {
+  lbBusy();
+  if (lbS > 1.01) { lbS = 1; lbTX = lbTY = 0; } else { lbZoomAt(x, y, 2.5); lbClamp(); }
+  lbRender(true); lbIdle();
+};
+const lbShow = k => { lbK = (k + lbList.length) % lbList.length; lbReset(); lbImg.src = lbList[lbK]; lb.classList.toggle("one", lbList.length < 2); };
 function openLightbox(src, gi) {
   if (!src) return;
   lbList = C.gallery.filter(Boolean);
@@ -426,11 +448,17 @@ function openLightbox(src, gi) {
 function closeLightbox() {
   if (!lb.classList.contains("open")) return;
   lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true");
+  clearTimeout(lbCloseT); setTimeout(() => { if (!lb.classList.contains("open")) lbReset(); }, 300);
   document.documentElement.style.overflow = lbLock[0]; document.body.style.overflow = lbLock[1];
   if (lbPrevFocus && lbPrevFocus.focus) lbPrevFocus.focus({ preventScroll: true });
 }
 document.querySelectorAll(".gal [data-i]").forEach(e => e.onclick = () => openLightbox(C.gallery[e.dataset.i], +e.dataset.i));
-lb.onclick = e => { if (e.target === lb) closeLightbox(); };
+lb.onclick = e => {
+  if (e.target !== lb || lbNow() < lbSup) return;
+  clearTimeout(lbCloseT);
+  if (e.detail > 1) return;
+  lbCloseT = setTimeout(closeLightbox, 320);
+};
 lb.querySelector(".lbx").onclick = closeLightbox;
 lb.querySelector(".lbp").onclick = () => lbShow(lbK - 1);
 lb.querySelector(".lbn").onclick = () => lbShow(lbK + 1);
@@ -440,13 +468,78 @@ document.addEventListener("keydown", e => {
   else if (e.key === "ArrowLeft") lbShow(lbK - 1);
   else if (e.key === "ArrowRight") lbShow(lbK + 1);
 });
-let lbX = 0, lbY = 0;
-lb.addEventListener("touchstart", e => { lbX = e.touches[0].clientX; lbY = e.touches[0].clientY; }, { passive: true });
-lb.addEventListener("touchend", e => {
-  const t = e.changedTouches[0], dx = t.clientX - lbX, dy = t.clientY - lbY;
-  if (lbList.length > 1 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) lbShow(lbK + (dx < 0 ? 1 : -1));
-}, { passive: true });
-lb.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
+const lbPinchBase = () => {
+  const [p, q] = [...lbPtr.values()], r = lb.getBoundingClientRect();
+  lbG.d0 = Math.hypot(p.x - q.x, p.y - q.y) || 1; lbG.s0 = lbS; lbG.tx0 = lbTX; lbG.ty0 = lbTY;
+  lbG.mx0 = (p.x + q.x) / 2 - r.left - r.width / 2; lbG.my0 = (p.y + q.y) / 2 - r.top - r.height / 2;
+};
+const lbPanBase = p => { lbG.x0 = p.x; lbG.y0 = p.y; lbG.tx0 = lbTX; lbG.ty0 = lbTY; };
+lb.addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || (e.pointerType === "mouse" && e.button !== 0)) return;
+  lbBusy();
+  lbPtr.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (lbPtr.size === 1) {
+    lbG = { t0: lbNow(), sx: e.clientX, sy: e.clientY, moved: false, multi: false };
+    lbPanBase(lbPtr.get(e.pointerId));
+    lbRender(false);
+  } else if (lbPtr.size === 2 && lbG) { lbG.multi = true; lbRender(false); lbPinchBase(); }
+  else if (lbPtr.size > 2) lbPtr.delete(e.pointerId);
+});
+lb.addEventListener("pointermove", e => {
+  const p = lbPtr.get(e.pointerId);
+  if (!p || !lbG) return;
+  if (e.pointerType === "mouse" && e.buttons === 0) return lbEnd(e, true);
+  p.x = e.clientX; p.y = e.clientY;
+  if (lbPtr.size === 2) {
+    const [a, b] = [...lbPtr.values()], r = lb.getBoundingClientRect();
+    const ns = lbLim(lbG.s0 * Math.hypot(a.x - b.x, a.y - b.y) / lbG.d0, 0.5, lbMax);
+    const mx = (a.x + b.x) / 2 - r.left - r.width / 2, my = (a.y + b.y) / 2 - r.top - r.height / 2;
+    lbTX = mx - ns * (lbG.mx0 - lbG.tx0) / lbG.s0; lbTY = my - ns * (lbG.my0 - lbG.ty0) / lbG.s0; lbS = ns;
+    lbClamp(); lbRender(false);
+  } else if (lbPtr.size === 1) {
+    if (Math.hypot(e.clientX - lbG.sx, e.clientY - lbG.sy) > 8) lbG.moved = true;
+    if (lbS > 1 && (lbG.moved || lbG.multi)) { lbTX = lbG.tx0 + e.clientX - lbG.x0; lbTY = lbG.ty0 + e.clientY - lbG.y0; lbClamp(); lbRender(false); }
+  }
+});
+function lbEnd(e, cancel) {
+  if (!lbPtr.has(e.pointerId) || !lbG) return;
+  const was = lbPtr.size, g = lbG;
+  lbPtr.delete(e.pointerId);
+  if (was === 2) {
+    g.multi = true; lbSup = lbNow() + 400;
+    if (lbS < 1) { lbS = 1; lbTX = lbTY = 0; } else lbClamp();
+    lbRender(true);
+    if (lbPtr.size === 1) lbPanBase([...lbPtr.values()][0]);
+  }
+  if (lbPtr.size) return;
+  const dx = e.clientX - g.sx, dy = e.clientY - g.sy, now = lbNow();
+  lbG = null; lbIdle();
+  if (g.multi) return;
+  if (g.moved) lbSup = now + 400;
+  if (cancel || e.type === "pointercancel") return;
+  if (lbS <= 1.001 && e.pointerType !== "mouse" && lbList.length > 1 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { lbShow(lbK + (dx < 0 ? 1 : -1)); return; }
+  if (g.moved || e.pointerType === "mouse" || now - g.t0 > 350) { lbTap = null; return; }
+  if (lbTap && now - lbTap.t < 300 && Math.hypot(e.clientX - lbTap.x, e.clientY - lbTap.y) < 30) {
+    lbTap = null; lbSup = now + 400; clearTimeout(lbCloseT);
+    lbToggle(e.clientX, e.clientY);
+  } else lbTap = { t: now, x: e.clientX, y: e.clientY };
+}
+lb.addEventListener("pointerup", e => lbEnd(e));
+lb.addEventListener("pointercancel", e => lbEnd(e, true));
+lb.addEventListener("dblclick", e => {
+  if (e.target.closest("button") || lbNow() < lbSup) return;
+  clearTimeout(lbCloseT); lbToggle(e.clientX, e.clientY);
+});
+lb.addEventListener("wheel", e => {
+  e.preventDefault();
+  const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
+  const ns = lbLim(lbS * Math.exp(-dy * (e.ctrlKey ? 0.01 : 0.002)), 1, lbMax);
+  if (ns === lbS) return;
+  lbBusy(); lbZoomAt(e.clientX, e.clientY, ns); lbClamp(); lbRender(false); lbIdle();
+}, { passive: false });
+lb.addEventListener("dragstart", e => e.preventDefault());
+lb.addEventListener("gesturestart", e => e.preventDefault());
+lb.addEventListener("touchmove", e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
 document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
   const t = b.dataset.copy;
   (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(() => {
