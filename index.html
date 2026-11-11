@@ -51,7 +51,7 @@ p{font-size:15px}
 .tl .it:before{content:"";position:absolute;left:-26px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(var(--ac),.2)}
 .tl .d{font-family:'Pretendard',sans-serif;font-size:12px;color:var(--gold);letter-spacing:.1em}
 .tl .t{font-size:15px}
-.tl .photo{height:150px;margin-top:8px}
+.tl .photo{height:200px;margin-top:8px}
 .cal{background:var(--card);border-radius:10px;padding:22px 16px;margin:0 0 28px;box-shadow:0 4px 20px rgba(var(--gl),.1)}
 .cal .m{font-size:15px;margin-bottom:12px}
 .cal table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
@@ -155,10 +155,10 @@ const CONFIG = {
   dad: "아빠 김철순", mom: "엄마 황다희",
   timelineTitle: "1년간의 성장 이야기",
   timeline: [
-    { date: "2026.02.03", title: "세상에 첫 인사", photo: "" },
+    { date: "2026.02.03", title: "세상에 첫 인사", photo: "1%EC%B2%AB%EC%9D%B8%EC%82%AC1770087674285.jpg", pos: "center 43%" },
     { date: "2026.05.13", title: "100일 축하", photo: "" },
-    { date: "2026.08.21", title: "200일의 축복", photo: "" },
-    { date: "2027.02.03", title: "1ST BIRTHDAY", photo: "" }
+    { date: "2026.08.21", title: "200일의 축복", photo: "3%EC%9D%B4%EB%B0%B1%EC%9D%BC20260821_122644(1).jpg", pos: "center 10%" },
+    { date: "2027.02.03", title: "1ST BIRTHDAY", photo: "4%EC%B2%AB%EB%8F%8C%EA%B9%80%EC%97%AC%EC%A4%80%20(68)(1).jpg", pos: "center 20%" }
   ],
   gallery: ["", "", "", "", "", "", ""],
   galleryHint: "사진을 클릭하시면 전체 화면 보기가 가능합니다",  // 갤러리 제목 아래 안내 문구 (비우면 안 보여요)
@@ -190,7 +190,7 @@ const THEMES = {
 const C = CONFIG, $ = s => document.querySelector(s);
 const themeName = new URLSearchParams(location.search).get("theme") || C.theme;
 Object.entries(THEMES[themeName] || THEMES.blue).forEach(([k, v]) => document.documentElement.style.setProperty("--" + k, v));
-const ph = (src, cls = "") => `<div class="photo ${cls}">${src ? `<img src="${src}" alt="" loading="lazy">` : "사진을 넣어주세요"}</div>`;
+const ph = (src, cls = "", pos = "") => `<div class="photo ${cls}">${src ? `<img src="${src}" alt="" loading="lazy"${pos ? ` style="object-position:${pos}"` : ""}>` : "사진을 넣어주세요"}</div>`;
 const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 const d = new Date(C.date);
 const mq = encodeURIComponent(C.mapQuery || C.address), mn = encodeURIComponent(C.mapName || C.venue);
@@ -218,7 +218,7 @@ $("#app").innerHTML = `
   ${C.greeting.map((l, i) => `<p class="reveal d${i % 3 + 1}">${l ? esc(l) : "&nbsp;"}</p>`).join("")}
   <div class="parents reveal">${esc(C.dad)} · ${esc(C.mom)}</div></section>
 <section style="background:var(--soft)"><div class="eyebrow reveal">Story</div><h2 class="reveal">${esc(C.timelineTitle)}</h2>
-  <div class="tl">${C.timeline.map(t => `<div class="it reveal"><div class="d">${esc(t.date)}</div><div class="t">${esc(t.title)}</div>${ph(t.photo)}</div>`).join("")}</div></section>
+  <div class="tl">${C.timeline.map(t => `<div class="it reveal"><div class="d">${esc(t.date)}</div><div class="t">${esc(t.title)}</div>${ph(t.photo, "", t.pos)}</div>`).join("")}</div></section>
 <section><div class="eyebrow reveal">Birthday Date</div><h2 class="reveal">${esc(C.dateText)}</h2>
   <div class="cal reveal">${calendar()}</div>
   <div class="count reveal" id="count"></div><p id="cmsg" class="reveal" style="color:var(--sub);font-size:13px"></p></section>
