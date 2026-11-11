@@ -19,11 +19,14 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/gangwonedumodu-bold.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-regular.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-medium.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/himelody-cover.woff2">
+<link rel="preload" as="image" href="cover-bg.jpg">
 <style>
 @font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/gangwonedumodu-light.woff2) format('woff2')}
 @font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/gangwonedumodu-bold.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/pretendard-regular.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/pretendard-medium.woff2) format('woff2')}
+@font-face{font-family:'Hi Melody';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/himelody-cover.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/pretendard-semibold.woff2) format('woff2')}
 :root{--bg:#f4f9fd;--card:#ffffff;--ink:#35465a;--sub:#7a8ea3;--gold:#6fa8dc;--soft:#e3f0fa;--page:#dfe9f1;--line:#cfe0ee;--p1:#e8f3fb;--p2:#cfe5f5;--pc:#8fb0cc;--cv0:#b8d6ee;--cv1:#dcecf9;--cv2:#8fbfe6;--sh:47,111,176;--gl:80,140,200;--ac:111,168,220;--on:#ffffff}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -47,6 +50,19 @@ p{font-size:15px}
 #cover .scroll{flex:none;position:relative;z-index:2;margin-top:10px;font-size:11px;line-height:1.4;letter-spacing:.2em;color:var(--sub);animation:bob 2s infinite}
 #cover .babyw{position:absolute;left:-5%;right:-5%;top:24px;bottom:0;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 8px 14px rgba(var(--sh),.35));pointer-events:none;opacity:0;animation:babyIn 1.2s 1.6s ease-out forwards,babyFloat 4s 2.8s ease-in-out infinite}
 #cover .baby{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;object-position:center bottom;-webkit-mask-image:linear-gradient(#000 90%,transparent);mask-image:linear-gradient(#000 90%,transparent)}
+/* 표지: 전체 배경 사진 (CONFIG.coverPhoto 가 있을 때만 .hasbg) */
+#cover.hasbg{isolation:isolate;background:var(--bg);padding:calc(clamp(24px,5svh,40px) + 16px) 0 clamp(12px,2.5svh,22px)}
+#cover .cvbg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#cover .cvbg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+#cover .cvbg:before,#cover .cvbg:after{content:"";position:absolute;left:0;right:0}
+#cover .cvbg:before{top:0;height:40%;background:linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,0))}
+#cover .cvbg:after{bottom:0;height:24%;background:linear-gradient(rgba(244,249,253,0),var(--bg))}
+#cover.hasbg .stage{background:none}
+#cover.hasbg .baby{-webkit-mask-image:linear-gradient(#000 93%,transparent);mask-image:linear-gradient(#000 93%,transparent)}
+#cover.hasbg .small{font-family:'Hi Melody','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(18px,5.4vw,22px);letter-spacing:.1em;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.28)}
+#cover.hasbg h1{font-family:'Hi Melody','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(40px,12.4vw,52px);line-height:1.2;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.28);margin-top:2px;letter-spacing:.02em}
+#cover.hasbg .when{color:var(--ink);font-weight:700;text-shadow:0 1px 8px rgba(255,255,255,.7)}
+#cover.hasbg .scroll{color:#4a5d73;text-shadow:0 1px 6px rgba(255,255,255,.7)}
 @keyframes babyIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes babyFloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
 @keyframes zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
@@ -170,7 +186,7 @@ footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
 const CONFIG = {
   theme: "blue",
   babyName: "여준",
-  title: "여준이의 첫번째 생일",
+  title: "여준이의\n첫번째 생일",  // \n 은 줄바꿈
   date: "2027-01-30T11:00:00+09:00",
   dateText: "2027년 1월 30일 토요일 오전 11시",
   venue: "포포인츠 바이 쉐라톤 서울 구로 2층 PDR-C",
@@ -179,7 +195,7 @@ const CONFIG = {
   mapQuery: "서울 구로구 디지털로32길 72 포포인츠 바이 쉐라톤 서울 구로",  // 지도·길찾기 검색어
   mapName: "포포인츠 바이 쉐라톤 서울 구로",  // 티맵 검색 이름
   kakaoKey: "88eb3c18d4c98f7ab69bbc468dd90351",  // 카카오 JavaScript 키 (비우면 지도 대신 안내 문구)
-  coverPhoto: "",
+  coverPhoto: "cover-bg.jpg",  // 표지 전체 배경 사진 (비우면 기존 하늘색 배경)
   coverBaby: "file_00000000bd4c82099c99e75a4dbca460.png",  // 표지에 서 있는 아기 사진(배경 없는 PNG). 비우면 안 보여요
   greeting: [
     "작고 소중한 아이가 세상에 와서",
@@ -260,9 +276,10 @@ const profile = P => P ? `<section class="prof"><div class="eyebrow reveal">Prof
   <div class="bub reveal d2">${esc(P.text)}</div></section>` : "";
 
 $("#app").innerHTML = `
-<section id="cover"${C.coverBaby || C.coverPhoto ? ' class="hasbaby"' : ""}>
-  <div class="txt"><div class="small">1st birthday</div><h1>${esc(C.title)}</h1></div>
-  ${C.coverBaby || C.coverPhoto ? `<div class="stage">${C.coverPhoto ? `<img class="bgimg" src="${C.coverPhoto}" alt="">` : ""}${C.coverBaby ? `<div class="babyw"><img class="baby" src="${C.coverBaby}" alt=""></div>` : ""}</div>` : ""}
+<section id="cover" class="${[C.coverBaby || C.coverPhoto ? "hasbaby" : "", C.coverPhoto ? "hasbg" : ""].join(" ").trim()}">
+  ${C.coverPhoto ? `<div class="cvbg"><img src="${C.coverPhoto}" alt=""></div>` : ""}
+  <div class="txt"><div class="small">1st birthday</div><h1>${esc(C.title).replace(/\n/g, "<br>")}</h1></div>
+  ${C.coverBaby || C.coverPhoto ? `<div class="stage">${C.coverBaby ? `<div class="babyw"><img class="baby" src="${C.coverBaby}" alt=""></div>` : ""}</div>` : ""}
   <div class="txt"><div class="when">${esc(C.dateText)}<br>${esc(C.venue)}</div></div>
   <div class="scroll">SCROLL</div>
 </section>
@@ -418,12 +435,12 @@ for (let i = 0; i < 12; i++) {
     while (fs > min && el.scrollWidth > el.clientWidth) el.style.fontSize = --fs + "px";
   };
   const fitCover = () => {
-    fitW(cv.querySelector("h1"), 16);
+    fitW(cv.querySelector("h1"), cv.classList.contains("hasbg") ? 24 : 16);
     fitW(cv.querySelector(".when"), 12);
   };
   fitCover(); addEventListener("load", fitCover); addEventListener("resize", fitCover);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCover);
-  if (document.fonts && document.fonts.load) Promise.all(["300 16px 'GangwonEdu Modu'", "700 16px 'GangwonEdu Modu'"].map(f => document.fonts.load(f, "여준이의 첫번째 생일 1st birthday"))).then(fitCover, () => {});
+  if (document.fonts && document.fonts.load) Promise.all(["300 16px 'GangwonEdu Modu'", "700 16px 'GangwonEdu Modu'", "400 16px 'Hi Melody'"].map(f => document.fonts.load(f, "여준이의 첫번째 생일 1st birthday"))).then(fitCover, () => {});
 })();
 const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("show"); io.unobserve(x.target); } }), { threshold: .15 });
 document.querySelectorAll(".reveal").forEach(e => io.observe(e));
