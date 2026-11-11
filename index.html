@@ -64,6 +64,22 @@ p{font-size:15px}
 .reveal{opacity:0;transform:translateY(32px);transition:opacity 1s ease,transform 1s ease}
 .reveal.show{opacity:1;transform:none}
 .reveal.d1{transition-delay:.15s}.reveal.d2{transition-delay:.3s}.reveal.d3{transition-delay:.45s}
+.prof .pfw{position:relative;width:78%;max-width:300px;margin:0 auto}
+.pfo{width:100%;aspect-ratio:3/4;padding:8px;background:#fff;border:2px dashed var(--gold);border-radius:50% 50% 28px 28px/37.5% 37.5% 28px 28px;box-shadow:0 6px 24px rgba(var(--gl),.1)}
+.pfo .photo.pfp{height:100%;border-radius:50% 50% 18px 18px/37.5% 37.5% 18px 18px}
+.stk{position:absolute;display:block;pointer-events:none;--r:0deg;transform:rotate(var(--r));animation:wob 3s ease-in-out infinite;filter:drop-shadow(0 2px 3px rgba(var(--sh),.2))}
+.stk.heart{width:44px;height:44px;left:calc(85% - 22px);top:calc(11% - 22px);--r:12deg}
+.stk.heart path{fill:var(--gold);stroke:#fff;stroke-width:1.4;stroke-linejoin:round}
+.stk.star{width:38px;height:38px;left:-14px;bottom:20px;--r:-12deg;animation-delay:-1.5s}
+.stk.star path{fill:#ffd54a;stroke:#fff;stroke-width:1.4;stroke-linejoin:round}
+.stk.dot{width:12px;height:12px;left:-6px;top:38%;border-radius:50%;background:var(--cv2);animation:none;filter:none}
+@keyframes wob{0%,100%{transform:translateY(-4px) rotate(calc(var(--r) - 6deg))}50%{transform:translateY(4px) rotate(calc(var(--r) + 6deg))}}
+@media (prefers-reduced-motion:reduce){.stk{animation:none;transform:rotate(var(--r))}}
+.pill{display:inline-block;margin-top:24px;padding:6px 18px;border-radius:999px;background:var(--gold);color:#fff;font-size:14px;font-weight:700;line-height:1.5;letter-spacing:.06em}
+.pname{font-size:24px;font-weight:700;line-height:1.4;color:var(--ink);margin-top:8px}
+.pnick{font-size:13px;line-height:1.5;color:#8b97a3;margin-top:2px}
+.bub{position:relative;max-width:340px;margin:28px auto 0;padding:18px 20px;border-radius:20px;background:#eef3f8;font-size:15px;line-height:1.7;color:#444;white-space:pre-line;word-break:keep-all;overflow-wrap:break-word}
+.bub:before{content:"";position:absolute;left:50%;top:-8px;margin-left:-9px;border:9px solid transparent;border-top:0;border-bottom-color:#eef3f8}
 .greet p{margin-bottom:14px}
 .parents{margin-top:30px;color:var(--sub);font-size:14px}
 .tl{position:relative;text-align:left;padding-left:26px;margin:0 6px}
@@ -174,6 +190,15 @@ const CONFIG = {
     "함께 오셔서 축복해 주세요."
   ],
   dad: "아빠 김철순", mom: "엄마 황다희",
+  profile: {  // 프로필 카드 (사진을 비우면 빈 사진 자리로 보여요)
+    title: "우리 아기를 소개해요",
+    tag: "Baby",
+    name: "김여준",
+    nick: "태명 황금이🪙",
+    text: "잘 먹고 잘 웃는 순딩이 김여준이에요.\n예쁨 받는 걸 좋아해요",
+    photo: "profile.jpg",
+    pos: "center 40%"  // 사진 위치 (object-position)
+  },
   timelineTitle: "1년간의 성장 이야기",
   timeline: [
     { date: "2026.02.03", title: "세상에 첫 인사", photo: "timeline1.jpg", pos: "center 43%" },
@@ -227,6 +252,13 @@ function calendar() {
   return h + "</tr></table>";
 }
 
+const stkHeart = '<svg class="stk heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 4.5 6.4 4.5c2.2 0 4.1 1.3 5.6 3.2 1.5-1.9 3.4-3.2 5.6-3.2 3.7 0 5.5 3.9 4 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+const stkStar = '<svg class="stk star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6-5.9-3.3-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>';
+const profile = P => P ? `<section class="prof"><div class="eyebrow reveal">Profile</div><h2 class="reveal">${esc(P.title)}</h2>
+  <div class="pfw reveal"><div class="pfo">${ph(P.photo, "pfp", P.pos)}</div>${stkHeart}${stkStar}<i class="stk dot"></i></div>
+  <div class="reveal d1"><span class="pill">${esc(P.tag)}</span><div class="pname">${esc(P.name)}</div><div class="pnick">${esc(P.nick)}</div></div>
+  <div class="bub reveal d2">${esc(P.text)}</div></section>` : "";
+
 $("#app").innerHTML = `
 <section id="cover"${C.coverBaby || C.coverPhoto ? ' class="hasbaby"' : ""}>
   <div class="txt"><div class="small">1st birthday</div><h1>${esc(C.title)}</h1></div>
@@ -237,6 +269,7 @@ $("#app").innerHTML = `
 <section class="greet"><div class="eyebrow reveal" style="text-transform:none">Invitation</div><h2 class="reveal d1">여준이의 돌잔치에 초대합니다</h2>
   ${C.greeting.map((l, i) => `<p class="reveal d${i % 3 + 1}">${l ? esc(l) : "&nbsp;"}</p>`).join("")}
   <div class="parents reveal">${esc(C.dad)} · ${esc(C.mom)}</div></section>
+${profile(C.profile)}
 <section style="background:var(--soft)"><div class="eyebrow reveal">Story</div><h2 class="reveal">${esc(C.timelineTitle)}</h2>
   <div class="tl">${C.timeline.map(t => `<div class="it reveal"><div class="d">${esc(t.date)}</div><div class="t">${esc(t.title)}</div>${ph(t.photo, "", t.pos)}</div>`).join("")}</div></section>
 <section><div class="eyebrow reveal">Birthday Date</div><h2 class="reveal">${esc(C.dateText)}</h2>
