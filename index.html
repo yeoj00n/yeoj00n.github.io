@@ -15,28 +15,32 @@
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/gangwonedumodu-light.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/gangwonedumodu-bold.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-regular.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-medium.woff2">
 <style>
+@font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/gangwonedumodu-light.woff2) format('woff2')}
+@font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/gangwonedumodu-bold.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/pretendard-regular.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/pretendard-medium.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/pretendard-semibold.woff2) format('woff2')}
 :root{--bg:#f4f9fd;--card:#ffffff;--ink:#35465a;--sub:#7a8ea3;--gold:#6fa8dc;--soft:#e3f0fa;--page:#dfe9f1;--line:#cfe0ee;--p1:#e8f3fb;--p2:#cfe5f5;--pc:#8fb0cc;--cv0:#b8d6ee;--cv1:#dcecf9;--cv2:#8fbfe6;--sh:47,111,176;--gl:80,140,200;--ac:111,168,220;--on:#ffffff}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--page);font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;color:var(--ink);line-height:1.8;-webkit-font-smoothing:antialiased}
+body{background:var(--page);font-family:'GangwonEdu Modu','Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;color:var(--ink);font-weight:300;line-height:1.8;-webkit-font-smoothing:antialiased}
 #app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh;overflow:hidden;position:relative;box-shadow:0 0 40px rgba(0,0,0,.08)}
 section{padding:72px 28px;text-align:center;position:relative}
-.eyebrow{font-family:'Pretendard',sans-serif;letter-spacing:.3em;font-size:12px;color:var(--gold);margin-bottom:10px;text-transform:uppercase}
-h2{font-weight:500;font-size:22px;margin-bottom:28px}
+.eyebrow{font-family:'GangwonEdu Modu','Pretendard',sans-serif;letter-spacing:.3em;font-size:12px;color:var(--gold);margin-bottom:10px;text-transform:uppercase}
+h2{font-weight:700;font-size:22px;margin-bottom:28px}
 p{font-size:15px}
 .photo{width:100%;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;color:var(--pc);font-size:13px;overflow:hidden;border-radius:6px}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
 #cover{height:100vh;height:100svh;min-height:640px;padding:calc(clamp(28px,7svh,56px) + 22px) 0 clamp(12px,2.5svh,22px);display:flex;flex-direction:column;justify-content:flex-start;text-align:center;color:#3a3a3a;background:#fff;overflow:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #cover:not(.hasbaby){justify-content:center}
 #cover .txt{position:relative;z-index:2;padding:0 16px;flex:none}
-#cover .small{font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:18px;font-weight:300;letter-spacing:.14em;color:#b4bbc3;opacity:0;animation:up 1.2s .4s forwards}
-#cover h1{font-size:clamp(18px,7.4vw,32px);font-weight:500;line-height:1.4;color:var(--gold);margin:6px 0 0;white-space:nowrap;opacity:0;animation:up 1.2s .9s forwards}
+#cover .small{font-family:'GangwonEdu Modu','Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:18px;font-weight:300;letter-spacing:.14em;color:#b4bbc3;opacity:0;animation:up 1.2s .4s forwards}
+#cover h1{font-size:clamp(18px,7.4vw,32px);font-weight:700;line-height:1.4;color:var(--gold);margin:6px 0 0;white-space:nowrap;opacity:0;animation:up 1.2s .9s forwards}
 #cover .stage{position:relative;z-index:0;width:100%;flex:1;min-height:0;margin:12px 0 8px;overflow:hidden;background:linear-gradient(180deg,#fff 0%,var(--cv1) 38%,var(--cv0) 62%,var(--cv1) 86%,#fff 100%)}
 #cover .bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent)}
 #cover .when{font-size:15.5px;line-height:1.7;color:#3a3a3a;overflow-wrap:break-word;word-break:keep-all;opacity:0;animation:up 1.2s 1.4s forwards}
@@ -66,20 +70,20 @@ p{font-size:15px}
 .tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--gold);opacity:.5}
 .tl .it{position:relative;margin-bottom:26px}
 .tl .it:before{content:"";position:absolute;left:-26px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(var(--ac),.2)}
-.tl .d{font-family:'Pretendard',sans-serif;font-size:12px;color:var(--gold);letter-spacing:.1em}
+.tl .d{font-family:'GangwonEdu Modu','Pretendard',sans-serif;font-size:12px;color:var(--gold);letter-spacing:.1em}
 .tl .t{font-size:15px}
 .tl .photo{height:200px;margin-top:8px}
 .cal{background:var(--card);border-radius:10px;padding:22px 16px;margin:0 0 28px;box-shadow:0 4px 20px rgba(var(--gl),.1)}
 .cal .m{font-size:15px;margin-bottom:12px}
 .cal table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
-.cal th{color:var(--sub);font-weight:400;padding:6px 0}
+.cal th{color:var(--sub);font-weight:300;padding:6px 0}
 .cal td{padding:0;height:42px;text-align:center;vertical-align:middle}
 .cal td.sun,.cal th:first-child{color:#d77}
 .cal td.on span{display:inline-block;width:30px;height:30px;line-height:30px;border-radius:50%;background:var(--gold);color:var(--on);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--ac),.5)}50%{box-shadow:0 0 0 9px rgba(var(--ac),0)}}
 .count{display:flex;justify-content:center;gap:10px;margin-bottom:14px}
 .count div{background:var(--card);border-radius:10px;width:66px;padding:12px 0;box-shadow:0 4px 14px rgba(var(--gl),.1)}
-.count b{display:block;font-size:22px;font-weight:500;font-family:'Pretendard',sans-serif}
+.count b{display:block;font-size:22px;font-weight:700;font-family:'GangwonEdu Modu','Pretendard',sans-serif}
 .count small{font-size:10px;color:var(--sub);letter-spacing:.1em}
 .gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -28px;position:relative;overscroll-behavior-x:contain}
 .gal::-webkit-scrollbar{display:none}
@@ -105,9 +109,9 @@ p{font-size:15px}
 .fam{display:flex;justify-content:center;gap:14px}
 .fam .c{width:30%}
 .fam .photo{aspect-ratio:1/1;border-radius:50%;margin-bottom:10px}
-.fam .n{font-size:18px;font-weight:500}.fam .h{font-size:12px;color:var(--gold)}
+.fam .n{font-size:18px;font-weight:700}.fam .h{font-size:12px;color:var(--gold)}
 .qa{background:var(--card);border-radius:10px;margin-bottom:12px;padding:18px 20px;text-align:center;box-shadow:0 4px 14px rgba(var(--gl),.08)}
-.qa .q{font-size:15px;font-weight:500;line-height:1.6;color:var(--gold);margin-bottom:8px}
+.qa .q{font-size:15px;font-weight:700;line-height:1.6;color:var(--gold);margin-bottom:8px}
 .qa .a{font-size:15px;line-height:1.9;color:#444;white-space:pre-line}
 .qmore{max-height:0;opacity:0;overflow:hidden;visibility:hidden;transition:max-height .5s ease,opacity .4s ease,visibility 0s .5s}
 .qmore.open{opacity:1;visibility:visible;transition:max-height .5s ease,opacity .4s ease .1s,visibility 0s}
@@ -120,12 +124,12 @@ p{font-size:15px}
 .mapbox #kmap{display:block;width:100%;height:100%;border:0;pointer-events:none}
 .mapbox.on #kmap{pointer-events:auto}
 .mapfail{display:flex;align-items:center;justify-content:center;height:100%;padding:0 20px;font-size:13px;color:var(--sub)}
-.kpin{padding:4px 10px;border-radius:14px;background:#fff;border:1px solid var(--gold);color:var(--ink);font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.kpin{padding:4px 10px;border-radius:14px;background:#fff;border:1px solid var(--gold);color:var(--ink);font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .mapbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .mapbtns .btn{background:rgba(var(--ac),.16);padding:10px 0;text-align:center;border-radius:10px}
 .mapnote{font-size:11px;color:var(--sub);margin-top:6px}
 .info{text-align:left;background:var(--card);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:14px;box-shadow:0 4px 14px rgba(var(--gl),.08)}
-.info b{display:block;font-weight:500;color:var(--gold);font-size:13px}
+.info b{display:block;font-weight:700;color:var(--gold);font-size:13px}
 footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
 #music{position:fixed;top:12px;right:calc(max(0px,(100% - 480px)/2) + 12px);z-index:50;width:36px;height:36px;padding:0;border-radius:50%;border:none;background:rgba(255,255,255,.75);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(var(--sh),.18);display:none;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
 #music svg{width:20px;height:20px;fill:none;stroke:#6fa8dc;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -386,6 +390,7 @@ for (let i = 0; i < 12; i++) {
   };
   fitCover(); addEventListener("load", fitCover); addEventListener("resize", fitCover);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCover);
+  if (document.fonts && document.fonts.load) Promise.all(["300 16px 'GangwonEdu Modu'", "700 16px 'GangwonEdu Modu'"].map(f => document.fonts.load(f, "여준이의 첫번째 생일 1st birthday"))).then(fitCover, () => {});
 })();
 const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("show"); io.unobserve(x.target); } }), { threshold: .15 });
 document.querySelectorAll(".reveal").forEach(e => io.observe(e));
