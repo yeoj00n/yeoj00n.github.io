@@ -160,7 +160,7 @@ const CONFIG = {
     { date: "2026.08.21", title: "200일의 축복", photo: "timeline3.jpg", pos: "center 10%" },
     { date: "2027.02.03", title: "1ST BIRTHDAY", photo: "timeline4.jpg", pos: "center 20%" }
   ],
-  gallery: ["", "", "", "", "", "", ""],
+  gallery: ["gallery01.jpg", "gallery02.jpg", "gallery03.jpg", "gallery04.jpg", "gallery05.jpg", "gallery06.jpg"],
   galleryHint: "사진을 클릭하시면 전체 화면 보기가 가능합니다",  // 갤러리 제목 아래 안내 문구 (비우면 안 보여요)
   family: [
     { name: "김철순", tag: "멋진 아빠", photo: "" },
@@ -222,7 +222,7 @@ $("#app").innerHTML = `
 <section><div class="eyebrow reveal">Birthday Date</div><h2 class="reveal">${esc(C.dateText)}</h2>
   <div class="cal reveal">${calendar()}</div>
   <div class="count reveal" id="count"></div><p id="cmsg" class="reveal" style="color:var(--sub);font-size:13px"></p></section>
-<section style="background:var(--soft)"><div class="eyebrow reveal">Gallery</div><h2 class="reveal">우리의 순간들</h2>
+<section style="background:var(--soft)"><div class="eyebrow reveal">Gallery</div><h2 class="reveal">여준이의 순간들</h2>
   ${C.galleryHint ? `<div class="galhint">${esc(C.galleryHint)}</div>` : ""}<div class="gal reveal" id="gal">${C.gallery.map((g, i) => `<div data-i="${i}">${ph(g)}</div>`).join("")}</div>
   <div class="galbar" id="galbar"></div></section>
 <section><div class="eyebrow reveal">Introduction</div><h2 class="reveal">우리 가족을 소개합니다</h2>
