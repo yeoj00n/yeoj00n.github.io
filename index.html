@@ -49,6 +49,13 @@ p{font-size:15px}
 @keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 .float{position:absolute;bottom:-60px;z-index:1;opacity:0;animation:rise linear infinite;pointer-events:none}
+.float.balloon{pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.float.balloon:after{content:"";position:absolute;inset:-12px}
+.float.popped{visibility:hidden;pointer-events:none}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none}
+.pang,.ring{position:fixed;z-index:41;pointer-events:none}
+.pang{text-align:center}
+.ring{width:36px;height:36px;margin:-18px 0 0 -18px;border:3px solid #fff;border-radius:50%;box-shadow:0 0 8px rgba(255,255,255,.9),0 0 0 1px rgba(143,200,240,.45)}
 @keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.85}90%{opacity:.7}100%{transform:translateY(-110vh) rotate(40deg);opacity:0}}
 .reveal{opacity:0;transform:translateY(32px);transition:opacity 1s ease,transform 1s ease}
 .reveal.show{opacity:1;transform:none}
@@ -290,11 +297,82 @@ if (kmapEl) {
 }
 const cv = $("#cover"), sy = ["🎈", "✨", "💙", "⭐", "🎈"];
 for (let i = 0; i < 12; i++) {
-  const e = document.createElement("div"); e.className = "float"; e.textContent = sy[i % sy.length];
+  const e = document.createElement("div"); e.className = "float" + (sy[i % sy.length] === "🎈" ? " balloon" : ""); e.textContent = sy[i % sy.length];
   e.style.left = Math.random() * 92 + "%"; e.style.fontSize = 16 + Math.random() * 18 + "px";
   e.style.animationDuration = 9 + Math.random() * 9 + "s"; e.style.animationDelay = Math.random() * 10 + "s";
   cv.appendChild(e);
 }
+/* 풍선 터뜨리기: 탭하면 팡! 하고 터지고 색종이가 나와요 (표지 전용) */
+(() => {
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches, MAX = 150, N = RM ? 10 : 28;
+  const COLORS = ["#8fc8f0", "#ffffff", "#ffe9a0", "#ffb6c9", "#a8e6cf", "#e8c36a"];
+  let cvs, ctx, W, H, parts = [], raf = 0, last = 0;
+  const size = () => {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight; cvs.width = W * d; cvs.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+  };
+  const star = r => {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5 - Math.PI / 2, d = i % 2 ? r * .45 : r; ctx.lineTo(Math.cos(a) * d, Math.sin(a) * d); }
+    ctx.closePath(); ctx.fill();
+  };
+  const frame = now => {
+    const dt = Math.min(.05, (now - last) / 1000), k = Math.exp(-1.2 * dt); last = now;
+    ctx.clearRect(0, 0, W, H);
+    parts = parts.filter(p => (p.t += dt) < p.life);
+    for (const p of parts) {
+      p.vy += 900 * dt; p.vx *= k; p.vy *= k; p.x += p.vx * dt; p.y += p.vy * dt; p.a += p.va * dt;
+      ctx.globalAlpha = Math.min(1, 2 * (1 - p.t / p.life));
+      ctx.fillStyle = p.c; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
+      if (p.k === 0) ctx.fillRect(-p.s / 2, -p.s * .28, p.s, p.s * .56);
+      else if (p.k === 1) { ctx.beginPath(); ctx.arc(0, 0, p.s * .4, 0, 6.283); ctx.fill(); }
+      else star(p.s * .6);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+    if (parts.length) raf = requestAnimationFrame(frame); else { raf = 0; ctx.clearRect(0, 0, W, H); }
+  };
+  const burst = (x, y) => {
+    if (!cvs) {
+      cvs = document.createElement("canvas"); cvs.id = "fx"; cvs.setAttribute("aria-hidden", "true");
+      ctx = cvs.getContext("2d"); document.body.appendChild(cvs); size(); addEventListener("resize", size);
+    }
+    for (let i = 0; i < N; i++) {
+      const a = Math.random() * 6.283, v = 120 + Math.random() * 380;
+      parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 180, a: Math.random() * 6.283, va: RM ? 0 : (Math.random() - .5) * 16,
+        s: 5 + Math.random() * 6, k: i % 3, c: COLORS[i % COLORS.length], t: 0, life: 1.2 + Math.random() * .4 });
+    }
+    if (parts.length > MAX) parts.splice(0, parts.length - MAX);
+    if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+  };
+  const fx = (el, frames, ms) => {
+    document.body.appendChild(el);
+    const done = () => el.remove();
+    try { el.animate(frames, { duration: ms, easing: "ease-out" }).onfinish = done; } catch (_) {}
+    setTimeout(done, ms + 100);
+  };
+  const pang = (r, fs) => {
+    const b = document.createElement("div"); b.className = "pang"; b.textContent = "🎈";
+    b.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;font-size:${fs}`;
+    fx(b, [{ transform: "scale(1)", opacity: 1 }, { transform: "scale(1.25)", opacity: 0 }], 120);
+    const o = document.createElement("div"); o.className = "ring";
+    o.style.left = r.left + r.width / 2 + "px"; o.style.top = r.top + r.height / 2 + "px";
+    fx(o, [{ transform: "scale(.4)", opacity: 1 }, { transform: "scale(1.8)", opacity: 0 }], 300);
+  };
+  cv.addEventListener("click", e => {
+    const el = e.target.closest && e.target.closest(".balloon");
+    if (!el || el.classList.contains("popped")) return;
+    const r = el.getBoundingClientRect();
+    el.classList.add("popped");
+    pang(r, getComputedStyle(el).fontSize);
+    burst(r.left + r.width / 2, r.top + r.height / 2);
+    try { navigator.vibrate && navigator.vibrate(10); } catch (_) {}
+    setTimeout(() => {
+      el.style.animationName = "none"; el.style.animationDelay = "0s"; el.classList.remove("popped");
+      void el.offsetWidth; el.style.animationName = "";
+    }, 1500 + Math.random() * 1000);
+  });
+})();
 (() => {
   const fitW = (el, min) => {
     if (!el) return;
