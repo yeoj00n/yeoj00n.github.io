@@ -15,7 +15,7 @@
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/gangwonedumodu-light.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/griun-fromsol.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/gangwonedumodu-bold.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-regular.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-medium.woff2">
@@ -26,7 +26,7 @@
 @font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/gangwonedumodu-bold.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/pretendard-regular.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/pretendard-medium.woff2) format('woff2')}
-@font-face{font-family:'Hi Melody';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/himelody-cover.woff2) format('woff2')}
+@font-face{font-family:'Griun Fromsol';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/griun-fromsol.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/pretendard-semibold.woff2) format('woff2')}
 :root{--bg:#f4f9fd;--card:#ffffff;--ink:#35465a;--sub:#7a8ea3;--gold:#6fa8dc;--soft:#e3f0fa;--page:#dfe9f1;--line:#cfe0ee;--p1:#e8f3fb;--p2:#cfe5f5;--pc:#8fb0cc;--cv0:#b8d6ee;--cv1:#dcecf9;--cv2:#8fbfe6;--sh:47,111,176;--gl:80,140,200;--ac:111,168,220;--on:#ffffff}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -60,8 +60,8 @@ p{font-size:15px}
 #cover.hasbg .stage{background:none}
 #cover.hasbg .baby{-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 88%,rgba(0,0,0,.86) 91%,rgba(0,0,0,.64) 94%,rgba(0,0,0,.38) 96.5%,rgba(0,0,0,.16) 98.5%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 88%,rgba(0,0,0,.86) 91%,rgba(0,0,0,.64) 94%,rgba(0,0,0,.38) 96.5%,rgba(0,0,0,.16) 98.5%,transparent 100%)}
 #cover.hasbg .babyw{filter:drop-shadow(0 4px 14px rgba(var(--sh),.3));-webkit-mask-image:linear-gradient(#000 calc(100% - 22px),transparent);mask-image:linear-gradient(#000 calc(100% - 22px),transparent)}
-#cover.hasbg .small{font-family:'Hi Melody','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(18px,5.4vw,22px);letter-spacing:.1em;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.28)}
-#cover.hasbg h1{font-family:'Hi Melody','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(40px,12.4vw,52px);line-height:1.2;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.28);margin-top:2px;letter-spacing:.02em}
+#cover.hasbg .small{font-family:'Griun Fromsol','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(18px,5.4vw,22px);letter-spacing:.1em;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.28);-webkit-text-stroke:.5px #fff;paint-order:stroke fill}
+#cover.hasbg h1{font-family:'Griun Fromsol','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(40px,12.4vw,52px);line-height:1.2;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.34);-webkit-text-stroke:.9px #fff;paint-order:stroke fill;margin-top:2px;letter-spacing:.02em}
 #cover.hasbg .when{color:var(--ink);font-weight:700;text-shadow:0 1px 8px rgba(255,255,255,.7)}
 #cover.hasbg .scroll{color:#4a5d73;text-shadow:0 1px 6px rgba(255,255,255,.7)}
 @keyframes babyIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
@@ -441,7 +441,7 @@ for (let i = 0; i < 12; i++) {
   };
   fitCover(); addEventListener("load", fitCover); addEventListener("resize", fitCover);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCover);
-  if (document.fonts && document.fonts.load) Promise.all(["300 16px 'GangwonEdu Modu'", "700 16px 'GangwonEdu Modu'", "400 16px 'Hi Melody'"].map(f => document.fonts.load(f, "여준이의 첫번째 생일 1st birthday"))).then(fitCover, () => {});
+  if (document.fonts && document.fonts.load) Promise.all(["300 16px 'GangwonEdu Modu'", "700 16px 'GangwonEdu Modu'", "400 16px 'Griun Fromsol'"].map(f => document.fonts.load(f, "여준이의 첫번째 생일 1st birthday"))).then(fitCover, () => {});
 })();
 const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("show"); io.unobserve(x.target); } }), { threshold: .15 });
 document.querySelectorAll(".reveal").forEach(e => io.observe(e));
