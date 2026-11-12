@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="cvwait">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>setTimeout(function(){var h=document.documentElement;if(h.classList.contains("cvwait")){h.classList.remove("cvwait");h.classList.add("cvready")}},6000)</script>
+<noscript><style>.cvwait #app,.cvwait #cover,.cvwait #cover.hasbg{background:revert!important}.cvwait #music,.cvwait #cover .cvbg,.cvwait #cover .small,.cvwait #cover h1,.cvwait #cover .when,.cvwait #cover .scroll,.cvwait #cover .babyw{opacity:1!important}.cvwait #cover .float{visibility:visible!important}</style></noscript>
 <title>여준이의 첫번째 생일</title>
 <meta name="description" content="여준이의 첫번째 생일에 초대합니다">
 <meta property="og:type" content="website">
@@ -15,18 +17,17 @@
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" as="image" href="cover-bg2.jpg">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/griun-fromsol.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/gangwonedumodu-light.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/gangwonedumodu-bold.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-regular.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-medium.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/griun-fromsol.woff2">
-<link rel="preload" as="image" href="cover-bg2.jpg">
 <style>
 @font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/gangwonedumodu-light.woff2) format('woff2')}
 @font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/gangwonedumodu-bold.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/pretendard-regular.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/pretendard-medium.woff2) format('woff2')}
-@font-face{font-family:'Griun Fromsol';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/griun-fromsol.woff2) format('woff2')}
+@font-face{font-family:'Griun Fromsol';font-style:normal;font-weight:400;font-display:block;src:url(fonts/griun-fromsol.woff2) format('woff2')}
 @font-face{font-family:'Pretendard';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/pretendard-semibold.woff2) format('woff2')}
 :root{--bg:#f4f9fd;--card:#ffffff;--ink:#35465a;--sub:#7a8ea3;--gold:#6fa8dc;--soft:#e3f0fa;--page:#dfe9f1;--line:#cfe0ee;--p1:#e8f3fb;--p2:#cfe5f5;--pc:#8fb0cc;--cv0:#b8d6ee;--cv1:#dcecf9;--cv2:#8fbfe6;--sh:47,111,176;--gl:80,140,200;--ac:111,168,220;--on:#ffffff}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -169,6 +170,13 @@ footer{padding:36px 20px 60px;font-size:12px;color:var(--sub);text-align:center}
 #music .sl{display:none}
 #music.off .sl{display:inline}
 #music.off .wv{display:none}
+/* 표지 로딩 게이트: 배경 사진·글꼴이 준비될 때까지 표지 내용을 숨겼다가(cvwait) 한꺼번에 보여줘요(cvready) */
+#cover .cvbg,#cover .scroll,#music{transition:opacity .5s ease}
+.cvwait #app,.cvwait #cover,.cvwait #cover.hasbg{background:#dfe6ee}
+.cvwait #cover .cvbg,.cvwait #cover .small,.cvwait #cover h1,.cvwait #cover .when,.cvwait #cover .scroll,.cvwait #cover .babyw,.cvwait #music{opacity:0}
+.cvwait #cover .small,.cvwait #cover h1,.cvwait #cover .when,.cvwait #cover .scroll,.cvwait #cover .babyw{animation:none}
+.cvwait #cover .float{visibility:hidden;animation:none}
+.cvwait #music{pointer-events:none}
 </style>
 </head>
 <body>
@@ -307,6 +315,23 @@ ${profile(C.profile)}
   <div class="btns reveal">${C.mapUrl ? `<a class="btn fill" href="${C.mapUrl}" target="_blank">지도 보기</a>` : ""}<button class="btn" data-copy="${esc(C.address)}">주소 복사</button></div>
   ${C.info.map(i => `<div class="info reveal"><b>${esc(i.title)}</b>${esc(i.text)}</div>`).join("")}</section>
 <footer>${esc(C.footer)}</footer>`;
+/* 표지 로딩 게이트: 배경 사진·글꼴이 모두 준비되면 한 번에 보여줘요 (3.5초가 지나도 그냥 보여줘요) */
+(() => {
+  const root = document.documentElement;
+  const reveal = () => { if (root.classList.contains("cvwait")) { root.classList.remove("cvwait"); root.classList.add("cvready"); } };
+  const safe = p => Promise.resolve(p).then(() => 0, () => 0);
+  const img = src => new Promise(ok => {
+    if (!src) return ok();
+    const i = new Image(); i.src = src;
+    if (i.decode) i.decode().then(ok, ok); else { i.onload = i.onerror = ok; }
+  });
+  const T = "여준이의 첫번째 생일 1st birthday", F = document.fonts;
+  const fonts = F && F.load ? [F.load("20px 'Griun Fromsol'", T), F.load("300 18px 'GangwonEdu Modu'", T), F.load("700 16px 'GangwonEdu Modu'", T)] : [];
+  const baby = Promise.race([img(C.coverBaby), new Promise(ok => setTimeout(ok, 2000))]);
+  Promise.all([img(C.coverPhoto), baby, ...fonts].map(safe)).then(reveal);
+  Promise.all([new Promise(ok => document.readyState === "complete" ? ok() : addEventListener("load", ok)).then(() => F && F.ready), ...fonts].map(safe)).then(reveal);
+  setTimeout(reveal, 3500);
+})();
 
 const TMAP_PLAY = "https://play.google.com/store/apps/details?id=com.skt.tmap.ku", TMAP_IOS = "https://apps.apple.com/kr/app/tmap/id431589174";
 const tmapLink = ua => /Android/i.test(ua) ? `intent://search?name=${mn}#Intent;scheme=tmap;package=com.skt.tmap.ku;S.browser_fallback_url=${encodeURIComponent(TMAP_PLAY)};end`
