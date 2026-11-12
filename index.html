@@ -20,7 +20,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-regular.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pretendard-medium.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/himelody-cover.woff2">
-<link rel="preload" as="image" href="cover-bg.jpg">
+<link rel="preload" as="image" href="cover-bg2.jpg">
 <style>
 @font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/gangwonedumodu-light.woff2) format('woff2')}
 @font-face{font-family:'GangwonEdu Modu';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/gangwonedumodu-bold.woff2) format('woff2')}
@@ -56,9 +56,10 @@ p{font-size:15px}
 #cover .cvbg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 #cover .cvbg:before,#cover .cvbg:after{content:"";position:absolute;left:0;right:0}
 #cover .cvbg:before{top:0;height:40%;background:linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,0))}
-#cover .cvbg:after{bottom:0;height:24%;background:linear-gradient(rgba(244,249,253,0),var(--bg))}
+#cover .cvbg:after{bottom:0;height:17%;background:linear-gradient(to bottom,rgba(183,197,210,0) 0%,rgba(183,197,210,.2) 14%,rgba(188,201,214,.4) 28%,rgba(200,213,225,.58) 42%,rgba(214,226,237,.74) 58%,rgba(228,238,247,.88) 76%,rgba(240,247,252,.97) 90%,#f4f9fd 100%)}
 #cover.hasbg .stage{background:none}
-#cover.hasbg .baby{-webkit-mask-image:linear-gradient(#000 93%,transparent);mask-image:linear-gradient(#000 93%,transparent)}
+#cover.hasbg .baby{-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 88%,rgba(0,0,0,.86) 91%,rgba(0,0,0,.64) 94%,rgba(0,0,0,.38) 96.5%,rgba(0,0,0,.16) 98.5%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 88%,rgba(0,0,0,.86) 91%,rgba(0,0,0,.64) 94%,rgba(0,0,0,.38) 96.5%,rgba(0,0,0,.16) 98.5%,transparent 100%)}
+#cover.hasbg .babyw{filter:drop-shadow(0 4px 14px rgba(var(--sh),.3));-webkit-mask-image:linear-gradient(#000 calc(100% - 22px),transparent);mask-image:linear-gradient(#000 calc(100% - 22px),transparent)}
 #cover.hasbg .small{font-family:'Hi Melody','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(18px,5.4vw,22px);letter-spacing:.1em;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.28)}
 #cover.hasbg h1{font-family:'Hi Melody','GangwonEdu Modu','Pretendard',sans-serif;font-weight:400;font-size:clamp(40px,12.4vw,52px);line-height:1.2;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.28);margin-top:2px;letter-spacing:.02em}
 #cover.hasbg .when{color:var(--ink);font-weight:700;text-shadow:0 1px 8px rgba(255,255,255,.7)}
@@ -195,7 +196,7 @@ const CONFIG = {
   mapQuery: "서울 구로구 디지털로32길 72 포포인츠 바이 쉐라톤 서울 구로",  // 지도·길찾기 검색어
   mapName: "포포인츠 바이 쉐라톤 서울 구로",  // 티맵 검색 이름
   kakaoKey: "88eb3c18d4c98f7ab69bbc468dd90351",  // 카카오 JavaScript 키 (비우면 지도 대신 안내 문구)
-  coverPhoto: "cover-bg.jpg",  // 표지 전체 배경 사진 (비우면 기존 하늘색 배경)
+  coverPhoto: "cover-bg2.jpg",  // 표지 전체 배경 사진 (비우면 기존 하늘색 배경)
   coverBaby: "file_00000000bd4c82099c99e75a4dbca460.png",  // 표지에 서 있는 아기 사진(배경 없는 PNG). 비우면 안 보여요
   greeting: [
     "작고 소중한 아이가 세상에 와서",
